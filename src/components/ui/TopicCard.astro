@@ -1,0 +1,29 @@
+---
+import Badge from './Badge.astro';
+interface Props {
+  href: string; theme: string; title: string; summary: string;
+  difficulty: string; readingTime?: number; hasInteractive: boolean; coverAlt?: string;
+}
+const { href, theme, title, summary, difficulty, readingTime, hasInteractive } = Astro.props;
+---
+<a class="card" href={href}>
+  <Badge variant="overline">{theme}</Badge>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__summary">{summary}</p>
+  <div class="card__meta">
+    <Badge variant="difficulty">{difficulty}</Badge>
+    {readingTime && <span class="card__time">{readingTime} 分钟</span>}
+    {hasInteractive && <Badge variant="interactive">含交互</Badge>}
+  </div>
+</a>
+<style>
+  .card{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-6);
+    background:var(--color-surface);border:1px solid var(--gray-200);border-radius:var(--radius-lg);
+    transition:var(--transition);text-decoration:none;}
+  .card:hover{border-color:var(--color-primary);box-shadow:var(--shadow-md);transform:translateY(-2px);text-decoration:none;}
+  .card__title{margin:var(--space-1) 0;color:var(--color-ink);}
+  .card:hover .card__title{color:var(--color-primary);}
+  .card__summary{color:var(--color-muted);font-size:var(--fs-body);margin:0;}
+  .card__meta{display:flex;gap:var(--space-3);align-items:center;margin-top:var(--space-2);}
+  .card__time{font-size:var(--fs-caption);color:var(--color-muted);}
+</style>
