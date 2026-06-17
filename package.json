@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:budget": "node scripts/check-island-budget.mjs"
   },
   "keywords": [],
   "author": "",

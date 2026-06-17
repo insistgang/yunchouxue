@@ -15,3 +15,4 @@ jobs:
       - run: pnpm astro check
       - run: pnpm vitest run
       - run: pnpm astro build
+      - run: pnpm check:budget
