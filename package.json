@@ -1,0 +1,37 @@
+{
+  "name": "yunchouxue",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/preact": "^5.1.5",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^5",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
+    "d3-shape": "^3.2.0",
+    "katex": "^0.17.0",
+    "preact": "^10.29.2",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/node": "^25.9.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.9"
+  }
+}
