@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="动态规划背包封面：DP 表格与回溯路径">
+  <title>动态规划与 0-1 背包问题</title>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#FAFAF7"/>
+  <!-- DP Grid -->
+  <!-- 5 rows (0..4) x 11 cols (0..10), each cell 58x80 starting at (60,80) -->
+  <g font-family="Georgia,serif" font-size="12">
+    <!-- Column headers: capacity 0..10 -->
+    <g fill="#4A5568">
+      <text x="89" y="72" text-anchor="middle">0</text>
+      <text x="147" y="72" text-anchor="middle">1</text>
+      <text x="205" y="72" text-anchor="middle">2</text>
+      <text x="263" y="72" text-anchor="middle">3</text>
+      <text x="321" y="72" text-anchor="middle">4</text>
+      <text x="379" y="72" text-anchor="middle">5</text>
+      <text x="437" y="72" text-anchor="middle">6</text>
+      <text x="495" y="72" text-anchor="middle">7</text>
+      <text x="553" y="72" text-anchor="middle">8</text>
+      <text x="611" y="72" text-anchor="middle">9</text>
+      <text x="669" y="72" text-anchor="middle">10</text>
+    </g>
+    <!-- Row headers: item 0..4 -->
+    <g fill="#4A5568">
+      <text x="40" y="122" text-anchor="middle">∅</text>
+      <text x="33" y="202" text-anchor="middle">A</text>
+      <text x="33" y="282" text-anchor="middle">B</text>
+      <text x="33" y="362" text-anchor="middle">C</text>
+      <text x="33" y="442" text-anchor="middle">D</text>
+    </g>
+  </g>
+  <!-- Grid cells background -->
+  <g fill="white" stroke="#E2E8F0" stroke-width="1">
+    <!-- Row 0 -->
+    <rect x="60" y="80" width="58" height="80"/><rect x="118" y="80" width="58" height="80"/>
+    <rect x="176" y="80" width="58" height="80"/><rect x="234" y="80" width="58" height="80"/>
+    <rect x="292" y="80" width="58" height="80"/><rect x="350" y="80" width="58" height="80"/>
+    <rect x="408" y="80" width="58" height="80"/><rect x="466" y="80" width="58" height="80"/>
+    <rect x="524" y="80" width="58" height="80"/><rect x="582" y="80" width="58" height="80"/>
+    <rect x="640" y="80" width="58" height="80"/>
+    <!-- Row 1 -->
+    <rect x="60" y="160" width="58" height="80"/><rect x="118" y="160" width="58" height="80"/>
+    <rect x="176" y="160" width="58" height="80"/><rect x="234" y="160" width="58" height="80"/>
+    <rect x="292" y="160" width="58" height="80"/><rect x="350" y="160" width="58" height="80"/>
+    <rect x="408" y="160" width="58" height="80"/><rect x="466" y="160" width="58" height="80"/>
+    <rect x="524" y="160" width="58" height="80"/><rect x="582" y="160" width="58" height="80"/>
+    <rect x="640" y="160" width="58" height="80"/>
+    <!-- Row 2 -->
+    <rect x="60" y="240" width="58" height="80"/><rect x="118" y="240" width="58" height="80"/>
+    <rect x="176" y="240" width="58" height="80"/><rect x="234" y="240" width="58" height="80"/>
+    <rect x="292" y="240" width="58" height="80"/><rect x="350" y="240" width="58" height="80"/>
+    <rect x="408" y="240" width="58" height="80"/><rect x="466" y="240" width="58" height="80"/>
+    <rect x="524" y="240" width="58" height="80"/><rect x="582" y="240" width="58" height="80"/>
+    <rect x="640" y="240" width="58" height="80"/>
+    <!-- Row 3 -->
+    <rect x="60" y="320" width="58" height="80"/><rect x="118" y="320" width="58" height="80"/>
+    <rect x="176" y="320" width="58" height="80"/><rect x="234" y="320" width="58" height="80"/>
+    <rect x="292" y="320" width="58" height="80"/><rect x="350" y="320" width="58" height="80"/>
+    <rect x="408" y="320" width="58" height="80"/><rect x="466" y="320" width="58" height="80"/>
+    <rect x="524" y="320" width="58" height="80"/><rect x="582" y="320" width="58" height="80"/>
+    <rect x="640" y="320" width="58" height="80"/>
+    <!-- Row 4 -->
+    <rect x="60" y="400" width="58" height="80"/><rect x="118" y="400" width="58" height="80"/>
+    <rect x="176" y="400" width="58" height="80"/><rect x="234" y="400" width="58" height="80"/>
+    <rect x="292" y="400" width="58" height="80"/><rect x="350" y="400" width="58" height="80"/>
+    <rect x="408" y="400" width="58" height="80"/><rect x="466" y="400" width="58" height="80"/>
+    <rect x="524" y="400" width="58" height="80"/><rect x="582" y="400" width="58" height="80"/>
+    <rect x="640" y="400" width="58" height="80"/>
+  </g>
+  <!-- Cell values -->
+  <g font-family="Georgia,serif" font-size="14" text-anchor="middle" fill="#2D3748">
+    <!-- Row 0: all zeros -->
+    <text x="89" y="125">0</text><text x="147" y="125">0</text><text x="205" y="125">0</text>
+    <text x="263" y="125">0</text><text x="321" y="125">0</text><text x="379" y="125">0</text>
+    <text x="437" y="125">0</text><text x="495" y="125">0</text><text x="553" y="125">0</text>
+    <text x="611" y="125">0</text><text x="669" y="125">0</text>
+    <!-- Row 1: A(2,3) -->
+    <text x="89" y="205">0</text><text x="147" y="205">0</text><text x="205" y="205">3</text>
+    <text x="263" y="205">3</text><text x="321" y="205">3</text><text x="379" y="205">3</text>
+    <text x="437" y="205">3</text><text x="495" y="205">3</text><text x="553" y="205">3</text>
+    <text x="611" y="205">3</text><text x="669" y="205">3</text>
+    <!-- Row 2: B(3,4) -->
+    <text x="89" y="285">0</text><text x="147" y="285">0</text><text x="205" y="285">3</text>
+    <text x="263" y="285">4</text><text x="321" y="285">4</text><text x="379" y="285">7</text>
+    <text x="437" y="285">7</text><text x="495" y="285">7</text><text x="553" y="285">7</text>
+    <text x="611" y="285">7</text><text x="669" y="285">7</text>
+    <!-- Row 3: C(4,5) -->
+    <text x="89" y="365">0</text><text x="147" y="365">0</text><text x="205" y="365">3</text>
+    <text x="263" y="365">4</text><text x="321" y="365">5</text><text x="379" y="365">7</text>
+    <text x="437" y="365">8</text><text x="495" y="365">9</text><text x="553" y="365">9</text>
+    <text x="611" y="365">12</text><text x="669" y="365">12</text>
+    <!-- Row 4: D(5,6) -->
+    <text x="89" y="445">0</text><text x="147" y="445">0</text><text x="205" y="445">3</text>
+    <text x="263" y="445">4</text><text x="321" y="445">5</text><text x="379" y="445">7</text>
+    <text x="437" y="445">8</text><text x="495" y="445">9</text><text x="553" y="445">10</text>
+    <text x="611" y="445">12</text>
+  </g>
+  <!-- Optimal cell (4,10): highlighted -->
+  <rect x="640" y="400" width="58" height="80" fill="#1D4E89" stroke="#1D4E89" stroke-width="2"/>
+  <text x="669" y="445" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="bold" fill="white">13</text>
+  <!-- Backtrack path cells highlighted green -->
+  <!-- (4,10)→(3,5): selected D, move to w=5 -->
+  <rect x="350" y="320" width="58" height="80" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2"/>
+  <text x="379" y="365" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#15803D">7</text>
+  <!-- (2,5)→(1,2): selected B -->
+  <rect x="176" y="240" width="58" height="80" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2"/>
+  <text x="205" y="285" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#15803D">3</text>
+  <!-- (1,2)→(0,0): selected A -->
+  <rect x="60" y="160" width="58" height="80" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2"/>
+  <text x="89" y="205" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#15803D">0</text>
+  <!-- Backtrack arrows (approximate) -->
+  <g stroke="#15803D" stroke-width="2" fill="none" marker-end="url(#ba)">
+    <defs>
+      <marker id="ba" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L7,3 z" fill="#15803D"/>
+      </marker>
+    </defs>
+    <!-- (4,10)→(3,5) diag arrow -->
+    <line x1="660" y1="415" x2="400" y2="335"/>
+    <!-- (3,5)→(2,2) diag -->
+    <line x1="370" y1="335" x2="215" y2="255"/>
+    <!-- (2,2)→(1,0) diag -->
+    <line x1="196" y1="255" x2="100" y2="175"/>
+  </g>
+  <!-- Title block -->
+  <rect x="730" y="100" width="420" height="430" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="750" y="155" font-family="Georgia,serif" font-size="13" fill="#4A5568" letter-spacing="2">动态规划</text>
+  <text x="750" y="205" font-family="Georgia,serif" font-size="26" font-weight="bold" fill="#1A1A2E">动态规划与</text>
+  <text x="750" y="245" font-family="Georgia,serif" font-size="26" font-weight="bold" fill="#1A1A2E">0-1 背包问题</text>
+  <line x1="750" y1="265" x2="1120" y2="265" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="750" y="300" font-family="sans-serif" font-size="15" fill="#4A5568">重叠子问题 + 最优子结构</text>
+  <text x="750" y="325" font-family="sans-serif" font-size="15" fill="#4A5568">DP 表逐格推进</text>
+  <text x="750" y="350" font-family="sans-serif" font-size="15" fill="#4A5568">回溯还原最优方案</text>
+  <line x1="750" y1="375" x2="1120" y2="375" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="750" y="410" font-family="Georgia,serif" font-size="13" fill="#1D4E89">难度 · 进阶</text>
+  <text x="750" y="435" font-family="Georgia,serif" font-size="13" fill="#4A5568">运筹学教学站</text>
+  <!-- Legend below grid -->
+  <rect x="60" y="495" width="20" height="20" fill="#1D4E89" rx="2"/>
+  <text x="88" y="510" font-family="sans-serif" font-size="13" fill="#2D3748">f(n,W)=13 最优值</text>
+  <rect x="220" y="495" width="20" height="20" fill="#15803D" fill-opacity="0.15" stroke="#15803D" rx="2"/>
+  <text x="248" y="510" font-family="sans-serif" font-size="13" fill="#15803D">回溯路径：选 A+B+D</text>
+</svg>

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="最大流最小割封面：流网络图与割划分">
+  <title>最大流与最小割</title>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#FAFAF7"/>
+  <defs>
+    <marker id="fa" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="fa-full" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#15803D"/>
+    </marker>
+    <marker id="fa-flow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#1D4E89"/>
+    </marker>
+  </defs>
+  <!-- S region background -->
+  <ellipse cx="240" cy="315" rx="190" ry="230" fill="#1D4E89" fill-opacity="0.06" stroke="#1D4E89" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <!-- T region background -->
+  <ellipse cx="570" cy="315" rx="190" ry="230" fill="#15803D" fill-opacity="0.06" stroke="#15803D" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <!-- S label -->
+  <text x="80" y="100" font-family="Georgia,serif" font-size="28" font-style="italic" fill="#1D4E89" opacity="0.5">S</text>
+  <!-- T label -->
+  <text x="710" y="100" font-family="Georgia,serif" font-size="28" font-style="italic" fill="#15803D" opacity="0.5">T</text>
+  <!-- Min-cut vertical dashed line -->
+  <line x1="405" y1="60" x2="405" y2="570" stroke="#15803D" stroke-width="2" stroke-dasharray="8,5"/>
+  <text x="398" y="50" font-family="Georgia,serif" font-size="13" fill="#15803D" text-anchor="middle">最小割</text>
+  <!-- Flow edges (gray, background) -->
+  <g stroke="#CBD5E1" stroke-width="1.5" fill="none" marker-end="url(#fa)">
+    <!-- s → A -->
+    <line x1="148" y1="295" x2="268" y2="220"/>
+    <!-- s → B -->
+    <line x1="148" y1="335" x2="268" y2="410"/>
+    <!-- A → C -->
+    <line x1="322" y1="210" x2="432" y2="210"/>
+    <!-- B → D -->
+    <line x1="322" y1="420" x2="432" y2="420"/>
+    <!-- A → B -->
+    <line x1="298" y1="235" x2="298" y2="395"/>
+  </g>
+  <!-- Cut edges (S→T, highlighted green = min-cut) -->
+  <g stroke="#15803D" stroke-width="3" fill="none" marker-end="url(#fa-full)">
+    <!-- A → C (cut edge, full) -->
+    <line x1="324" y1="210" x2="432" y2="210"/>
+    <!-- B → D (cut edge, full) -->
+    <line x1="324" y1="420" x2="432" y2="420"/>
+  </g>
+  <!-- Edges T side -->
+  <g stroke="#CBD5E1" stroke-width="1.5" fill="none" marker-end="url(#fa)">
+    <!-- C → t -->
+    <line x1="492" y1="210" x2="612" y2="295"/>
+    <!-- D → t -->
+    <line x1="492" y1="420" x2="612" y2="335"/>
+    <!-- C → D -->
+    <line x1="460" y1="235" x2="460" y2="395"/>
+  </g>
+  <!-- Flow labels on cut edges -->
+  <text x="378" y="200" font-family="Georgia,serif" font-size="13" fill="#15803D" text-anchor="middle">10/10</text>
+  <text x="378" y="440" font-family="Georgia,serif" font-size="13" fill="#15803D" text-anchor="middle">9/9</text>
+  <!-- Nodes -->
+  <!-- s: source -->
+  <circle cx="130" cy="315" r="28" fill="#1D4E89" stroke="#FAFAF7" stroke-width="2"/>
+  <text x="130" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="bold" fill="white">
+    <tspan x="130" y="320" alignment-baseline="central">s</tspan>
+  </text>
+  <!-- A -->
+  <circle cx="298" cy="210" r="24" fill="#1D4E89" fill-opacity="0.2" stroke="#1D4E89" stroke-width="2"/>
+  <text x="298" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#1D4E89">
+    <tspan x="298" y="215" alignment-baseline="central">A</tspan>
+  </text>
+  <!-- B -->
+  <circle cx="298" cy="420" r="24" fill="#1D4E89" fill-opacity="0.2" stroke="#1D4E89" stroke-width="2"/>
+  <text x="298" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#1D4E89">
+    <tspan x="298" y="425" alignment-baseline="central">B</tspan>
+  </text>
+  <!-- C (T side) -->
+  <circle cx="462" cy="210" r="24" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2"/>
+  <text x="462" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#15803D">
+    <tspan x="462" y="215" alignment-baseline="central">C</tspan>
+  </text>
+  <!-- D (T side) -->
+  <circle cx="462" cy="420" r="24" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2"/>
+  <text x="462" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#15803D">
+    <tspan x="462" y="425" alignment-baseline="central">D</tspan>
+  </text>
+  <!-- t: sink -->
+  <circle cx="630" cy="315" r="28" fill="#15803D" stroke="#FAFAF7" stroke-width="2"/>
+  <text x="630" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="bold" fill="white">
+    <tspan x="630" y="320" alignment-baseline="central">t</tspan>
+  </text>
+  <!-- Max flow annotation -->
+  <rect x="100" y="535" width="660" height="36" rx="4" fill="white" stroke="#E2E8F0"/>
+  <text x="130" y="558" font-family="Georgia,serif" font-size="14" fill="#15803D">最大流值 |f| = 19 = 最小割容量 c(S,T)</text>
+  <!-- Title block -->
+  <rect x="760" y="100" width="390" height="430" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="780" y="155" font-family="Georgia,serif" font-size="13" fill="#4A5568" letter-spacing="2">网络流</text>
+  <text x="780" y="205" font-family="Georgia,serif" font-size="28" font-weight="bold" fill="#1A1A2E">最大流与</text>
+  <text x="780" y="245" font-family="Georgia,serif" font-size="28" font-weight="bold" fill="#1A1A2E">最小割</text>
+  <line x1="780" y1="265" x2="1120" y2="265" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="780" y="300" font-family="sans-serif" font-size="15" fill="#4A5568">增广路 + 残余网络</text>
+  <text x="780" y="325" font-family="sans-serif" font-size="15" fill="#4A5568">弱对偶 → 强对偶</text>
+  <text x="780" y="350" font-family="sans-serif" font-size="15" fill="#4A5568">最大流 = 最小割</text>
+  <line x1="780" y1="375" x2="1120" y2="375" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="780" y="410" font-family="Georgia,serif" font-size="13" fill="#1D4E89">难度 · 高级</text>
+  <text x="780" y="435" font-family="Georgia,serif" font-size="13" fill="#4A5568">运筹学教学站</text>
+</svg>

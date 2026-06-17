@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="线性规划封面：可行域多边形与目标函数等值线">
+  <title>线性规划与单纯形法</title>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#FAFAF7"/>
+  <!-- Grid lines (light) -->
+  <g stroke="#E2E8F0" stroke-width="1">
+    <line x1="100" y1="80" x2="100" y2="550"/>
+    <line x1="220" y1="80" x2="220" y2="550"/>
+    <line x1="340" y1="80" x2="340" y2="550"/>
+    <line x1="460" y1="80" x2="460" y2="550"/>
+    <line x1="580" y1="80" x2="580" y2="550"/>
+    <line x1="700" y1="80" x2="700" y2="550"/>
+    <line x1="60" y1="120" x2="760" y2="120"/>
+    <line x1="60" y1="240" x2="760" y2="240"/>
+    <line x1="60" y1="360" x2="760" y2="360"/>
+    <line x1="60" y1="480" x2="760" y2="480"/>
+  </g>
+  <!-- Axes -->
+  <g stroke="#4A5568" stroke-width="2">
+    <line x1="100" y1="530" x2="720" y2="530" marker-end="url(#arrow)"/>
+    <line x1="100" y1="530" x2="100" y2="90" marker-end="url(#arrow)"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#4A5568"/>
+    </marker>
+  </defs>
+  <!-- Axis labels -->
+  <text x="730" y="535" font-family="Georgia,serif" font-size="18" fill="#4A5568">x₁</text>
+  <text x="88" y="80" font-family="Georgia,serif" font-size="18" fill="#4A5568">x₂</text>
+  <!-- Feasible region polygon (shaded) -->
+  <!-- Vertices: (0,0)→(0,240) (480,0) (240,240) in pixel coords -->
+  <!-- Mapping: x*80+100, 530-y*80 -->
+  <!-- (0,0)→(100,530), (4,0)→(420,530), (8/3,8/3)→(313,317), (0,4)→(100,210) -->
+  <polygon points="100,530 420,530 313,317 100,210" fill="#1D4E89" fill-opacity="0.10" stroke="#1D4E89" stroke-width="2"/>
+  <!-- Constraint lines -->
+  <!-- 2x1+x2=8: at x1=0 → x2=8(y=530-640<0 clip), at x2=0 → x1=4 (420,530); also (0,8)→(100,530-640)=(100,-110) clip to visible -->
+  <line x1="100" y1="210" x2="420" y2="530" stroke="#1D4E89" stroke-width="2" stroke-dasharray="6,3"/>
+  <!-- x1+2x2=8: at x1=0 → x2=4 (100,210); at x2=0 → x1=8 (740,530) -->
+  <line x1="100" y1="210" x2="740" y2="530" stroke="#4A5568" stroke-width="2" stroke-dasharray="6,3"/>
+  <!-- Objective iso-value lines (parallel family) -->
+  <!-- 30x1+20x2=k: slope -30/20=-1.5; direction vector (20,30) -->
+  <g stroke="#B45309" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6">
+    <line x1="100" y1="330" x2="340" y2="530"/>
+    <line x1="100" y1="270" x2="420" y2="530"/>
+    <line x1="160" y1="210" x2="580" y2="530"/>
+  </g>
+  <!-- Optimal iso-value line (through optimal vertex) -->
+  <line x1="153" y1="130" x2="640" y2="530" stroke="#B45309" stroke-width="2.5"/>
+  <!-- Vertex points -->
+  <circle cx="100" cy="530" r="5" fill="#4A5568"/>
+  <circle cx="420" cy="530" r="5" fill="#4A5568"/>
+  <circle cx="100" cy="210" r="5" fill="#4A5568"/>
+  <!-- Optimal vertex highlighted -->
+  <circle cx="313" cy="317" r="9" fill="#15803D" stroke="#FAFAF7" stroke-width="2"/>
+  <text x="318" y="310" font-family="Georgia,serif" font-size="14" fill="#15803D">(8/3, 8/3)</text>
+  <text x="318" y="327" font-family="Georgia,serif" font-size="13" fill="#15803D">z* = 400/3</text>
+  <!-- Title block (right side) -->
+  <rect x="820" y="100" width="320" height="430" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="840" y="155" font-family="Georgia,serif" font-size="13" fill="#4A5568" letter-spacing="2">线性规划</text>
+  <text x="840" y="205" font-family="Georgia,serif" font-size="30" font-weight="bold" fill="#1A1A2E">线性规划</text>
+  <text x="840" y="245" font-family="Georgia,serif" font-size="30" font-weight="bold" fill="#1A1A2E">与单纯形法</text>
+  <line x1="840" y1="265" x2="1120" y2="265" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="840" y="300" font-family="sans-serif" font-size="15" fill="#4A5568">约束围出可行域</text>
+  <text x="840" y="325" font-family="sans-serif" font-size="15" fill="#4A5568">最优在极点取到</text>
+  <text x="840" y="350" font-family="sans-serif" font-size="15" fill="#4A5568">单纯形逐顶点行走</text>
+  <line x1="840" y1="375" x2="1120" y2="375" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="840" y="410" font-family="Georgia,serif" font-size="13" fill="#1D4E89">难度 · 进阶</text>
+  <text x="840" y="435" font-family="Georgia,serif" font-size="13" fill="#4A5568">运筹学教学站</text>
+</svg>
