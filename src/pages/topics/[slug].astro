@@ -1,0 +1,23 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import TopicLayout from '@/layouts/TopicLayout.astro';
+
+export async function getStaticPaths() {
+  const topics = (await getCollection('topics', (t: CollectionEntry<'topics'>) => !t.data.draft))
+    .sort((a: CollectionEntry<'topics'>, b: CollectionEntry<'topics'>) => a.data.order - b.data.order);
+  return topics.map((topic: CollectionEntry<'topics'>, i: number) => ({
+    params: { slug: topic.id },
+    props: {
+      topic,
+      prev: topics[i - 1] && { slug: topics[i - 1].id, title: topics[i - 1].data.title },
+      next: topics[i + 1] && { slug: topics[i + 1].id, title: topics[i + 1].data.title },
+    },
+  }));
+}
+const { topic, prev, next } = Astro.props;
+const { Content, headings } = await render(topic);
+---
+<TopicLayout topic={topic} headings={headings} prev={prev} next={next}>
+  <Content />
+</TopicLayout>
