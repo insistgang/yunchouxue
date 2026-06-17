@@ -55,7 +55,10 @@ const articleJson = {
   .topic__head{margin:var(--space-4) 0 var(--space-8);}
   .topic__meta{color:var(--color-muted);font-size:var(--fs-caption);}
   .topic__lead{color:var(--color-body);font-size:1.125rem;max-width:68ch;}
+  /* min-width:0 防止 grid 子项内容溢出（PRD 12.1 响应式 / DoD#8）*/
   .topic__grid{display:grid;grid-template-columns:1fr;gap:var(--space-12);}
+  .topic__grid > *{min-width:0;overflow-x:hidden;}
+  .prose{overflow-x:hidden;}
   @media (min-width:1024px){ .topic__grid{grid-template-columns:minmax(0,var(--content-width)) 1fr;} }
   .topic__nav{display:flex;justify-content:space-between;gap:var(--space-4);margin-top:var(--space-16);padding-top:var(--space-8);border-top:1px solid var(--gray-200);}
   .topic__navlink--next{margin-left:auto;text-align:right;}

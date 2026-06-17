@@ -18,7 +18,8 @@ export default function PlayControls(p: Props) {
       <span class="pc__pos" aria-live="off">{p.i + 1} / {p.total}</span>
       <style>{`
         .pc{display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center;margin-top:var(--space-4);}
-        .pc button{height:40px;padding:0 var(--space-4);border:1px solid var(--color-primary);background:transparent;color:var(--color-primary);border-radius:var(--radius-sm);cursor:pointer;font-size:var(--fs-caption);}
+        /* 高度 44px：WCAG 2.5.5 最小触摸目标（PRD 12.1-3 / DoD#8）*/
+        .pc button{height:44px;min-width:44px;padding:0 var(--space-4);border:1px solid var(--color-primary);background:transparent;color:var(--color-primary);border-radius:var(--radius-sm);cursor:pointer;font-size:var(--fs-caption);}
         .pc button:disabled{opacity:.4;cursor:not-allowed;}
         .pc__speed{display:flex;gap:var(--space-1);align-items:center;color:var(--color-muted);font-size:var(--fs-caption);}
         .pc__pos{margin-left:auto;color:var(--color-muted);font-size:var(--fs-caption);}
