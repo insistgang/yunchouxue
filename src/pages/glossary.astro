@@ -1,0 +1,29 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import { glossary } from '@/data/glossary';
+---
+<BaseLayout title="术语表 — 运筹学教学站" description="运筹学核心术语中英对照与释义。">
+  <div class="wrap">
+    <Breadcrumb items={[{label:'首页',href:'/'},{label:'术语表'}]} />
+    <h1>术语表</h1>
+    <p class="lead">运筹学核心术语的中英对照与简短释义，正文术语可跳转至此。</p>
+    <dl class="glossary">
+      {glossary.map(t => (
+        <div class="term" id={t.id}>
+          <dt>{t.zh} <span class="term__en">{t.en}</span></dt>
+          <dd>{t.def}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</BaseLayout>
+<style>
+  .wrap{max-width:var(--content-width);margin:0 auto;padding:var(--space-12) var(--space-4);}
+  .lead{color:var(--color-muted);}
+  .glossary{display:flex;flex-direction:column;gap:var(--space-5);margin-top:var(--space-8);}
+  .term{padding-bottom:var(--space-4);border-bottom:1px solid var(--gray-200);scroll-margin-top:calc(var(--nav-height) + var(--space-4));}
+  .term dt{font-weight:700;color:var(--color-ink);}
+  .term__en{font-weight:400;color:var(--color-muted);font-style:italic;}
+  .term dd{margin:var(--space-2) 0 0;color:var(--color-body);}
+</style>
