@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import TOC from '@/components/ui/TOC.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  topic: CollectionEntry<'topics'>;
+  headings: { depth: number; slug: string; text: string }[];
+  prev?: { slug: string; title: string };
+  next?: { slug: string; title: string };
+}
+const { topic, headings, prev, next } = Astro.props;
+const d = topic.data;
+const dateStr = d.updatedDate.toISOString().slice(0, 10);
+---
+<BaseLayout title={`${d.title} — 运筹学教学站`} description={d.summary} image={d.cover?.src}>
+  <div class="topic">
+    <Breadcrumb items={[{label:'首页',href:'/'},{label:'专题',href:'/topics'},{label:d.title}]} />
+    <header class="topic__head">
+      <h1>{d.title}</h1>
+      <p class="topic__meta">{d.theme} · {d.difficulty}{d.readingTime ? ` · ${d.readingTime} 分钟` : ''} · 更新于 {dateStr}</p>
+      <p class="topic__lead">{d.summary}</p>
+    </header>
+    <div class="topic__grid">
+      <article class="prose"><slot /></article>
+      <aside class="topic__toc"><TOC headings={headings} /></aside>
+    </div>
+    <nav class="topic__nav" aria-label="上下篇">
+      {prev && <a class="topic__navlink" href={`/topics/${prev.slug}`}>← {prev.title}</a>}
+      {next && <a class="topic__navlink topic__navlink--next" href={`/topics/${next.slug}`}>{next.title} →</a>}
+    </nav>
+  </div>
+</BaseLayout>
+<style>
+  .topic{max-width:var(--wide-width);margin:0 auto;padding:var(--space-8) var(--space-4) var(--space-16);}
+  .topic__head{margin:var(--space-4) 0 var(--space-8);}
+  .topic__meta{color:var(--color-muted);font-size:var(--fs-caption);}
+  .topic__lead{color:var(--color-body);font-size:1.125rem;max-width:68ch;}
+  .topic__grid{display:grid;grid-template-columns:1fr;gap:var(--space-12);}
+  @media (min-width:1024px){ .topic__grid{grid-template-columns:minmax(0,var(--content-width)) 1fr;} }
+  .topic__nav{display:flex;justify-content:space-between;gap:var(--space-4);margin-top:var(--space-16);padding-top:var(--space-8);border-top:1px solid var(--gray-200);}
+  .topic__navlink--next{margin-left:auto;text-align:right;}
+</style>
