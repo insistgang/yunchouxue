@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yunchouxue.example.com/sitemap-index.xml

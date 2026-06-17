@@ -1,0 +1,5 @@
+---
+interface Props { json: Record<string, unknown>; }
+const { json } = Astro.props;
+---
+<script is:inline type="application/ld+json" set:html={JSON.stringify(json)} />

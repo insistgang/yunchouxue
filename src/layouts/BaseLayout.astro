@@ -8,7 +8,7 @@ const { title, description, image } = Astro.props;
 ---
 <!doctype html>
 <html lang="zh-CN">
-  <head><BaseHead title={title} description={description} image={image} /></head>
+  <head><BaseHead title={title} description={description} image={image} /><slot name="head" /></head>
   <body>
     <a class="skip-link" href="#main">跳到主内容</a>
     <Header />
