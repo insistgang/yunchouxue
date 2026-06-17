@@ -1,0 +1,39 @@
+---
+const path = Astro.url.pathname;
+const links = [
+  { href: '/topics', label: '专题' },
+  { href: '/glossary', label: '术语表' },
+  { href: '/about', label: '关于' },
+];
+const isActive = (href: string) => path === href || path.startsWith(href + '/');
+import MobileMenu from './MobileMenu.astro';
+---
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="/">运筹学<span>·教学站</span></a>
+    <nav class="nav__links" aria-label="主导航">
+      {links.map(l => (
+        <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+      ))}
+      <a class="nav__gh" href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub 源码">GitHub</a>
+    </nav>
+    <MobileMenu links={links} />
+  </div>
+</header>
+<script>
+  const nav = document.querySelector('.nav');
+  const onScroll = () => nav?.classList.toggle('nav--scrolled', window.scrollY > 4);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+<style>
+  .nav{position:sticky;top:0;z-index:50;height:var(--nav-height);background:var(--color-paper);border-bottom:1px solid var(--gray-200);transition:box-shadow var(--transition);}
+  .nav--scrolled{box-shadow:var(--shadow-sm);}
+  .nav__inner{max-width:var(--wide-width);height:100%;margin:0 auto;padding:0 var(--space-4);display:flex;align-items:center;justify-content:space-between;}
+  .nav__brand{font-weight:700;color:var(--color-ink);}
+  .nav__brand span{color:var(--color-muted);font-weight:400;}
+  .nav__links{display:flex;gap:var(--space-5);align-items:center;}
+  .nav__links a{color:var(--color-body);padding:var(--space-2) 0;border-bottom:2px solid transparent;}
+  .nav__links a[aria-current="page"]{color:var(--color-primary);border-bottom-color:var(--color-primary);}
+  @media (max-width:1023px){ .nav__links{display:none;} }
+</style>

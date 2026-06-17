@@ -1,0 +1,28 @@
+---
+interface Props { links: { href: string; label: string }[]; }
+const { links } = Astro.props;
+---
+<button class="hamburger" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-drawer">☰</button>
+<div id="mobile-drawer" class="drawer" hidden>
+  <button class="drawer__close" aria-label="关闭菜单">✕</button>
+  <nav aria-label="移动导航">
+    {links.map(l => <a href={l.href}>{l.label}</a>)}
+  </nav>
+</div>
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.hamburger')!;
+  const drawer = document.getElementById('mobile-drawer')!;
+  const close = drawer.querySelector<HTMLButtonElement>('.drawer__close')!;
+  const open = () => { drawer.hidden = false; btn.setAttribute('aria-expanded','true'); close.focus(); };
+  const shut = () => { drawer.hidden = true; btn.setAttribute('aria-expanded','false'); btn.focus(); };
+  btn.addEventListener('click', open);
+  close.addEventListener('click', shut);
+  drawer.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
+</script>
+<style>
+  .hamburger{display:none;font-size:1.5rem;background:none;border:none;cursor:pointer;color:var(--color-ink);}
+  .drawer{position:fixed;inset:0;background:var(--color-paper);z-index:60;padding:var(--space-8);display:flex;flex-direction:column;gap:var(--space-5);}
+  .drawer a{font-size:var(--fs-h3);color:var(--color-ink);}
+  .drawer__close{align-self:flex-end;font-size:1.5rem;background:none;border:none;cursor:pointer;}
+  @media (max-width:1023px){ .hamburger{display:block;} }
+</style>

@@ -1,0 +1,27 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="ft">
+  <div class="ft__inner">
+    <div><p class="ft__brand">运筹学·教学站</p><p class="ft__desc">把运筹学讲清楚的交互式教学站。</p></div>
+    <nav aria-label="专题"><p class="ft__h">专题</p>
+      <a href="/topics/linear-programming-simplex">线性规划</a>
+      <a href="/topics/shortest-path-dijkstra">最短路径</a>
+      <a href="/topics/max-flow-min-cut">最大流最小割</a>
+      <a href="/topics/dynamic-programming-knapsack">动态规划背包</a>
+    </nav>
+    <nav aria-label="关于"><p class="ft__h">关于</p>
+      <a href="/about">关于本站</a><a href="/glossary">术语表</a>
+    </nav>
+    <div><p class="ft__h">许可</p><p class="ft__desc">代码 MIT · 内容 CC BY-SA 4.0</p><p class="ft__desc">© {year}</p></div>
+  </div>
+</footer>
+<style>
+  .ft{border-top:1px solid var(--gray-200);background:var(--color-canvas);margin-top:var(--space-24);}
+  .ft__inner{max-width:var(--wide-width);margin:0 auto;padding:var(--space-12) var(--space-4);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:var(--space-8);}
+  .ft__brand{font-weight:700;color:var(--color-ink);margin:0;}
+  .ft__h{font-weight:600;color:var(--color-ink);margin:0 0 var(--space-2);}
+  .ft nav{display:flex;flex-direction:column;gap:var(--space-1);}
+  .ft__desc{color:var(--color-muted);font-size:var(--fs-caption);margin:var(--space-1) 0;}
+  @media (max-width:767px){ .ft__inner{grid-template-columns:1fr;} }
+</style>
