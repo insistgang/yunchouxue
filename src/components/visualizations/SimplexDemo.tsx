@@ -8,42 +8,83 @@ import StatusLog from './_shared/StatusLog';
 import { COLORS } from './_shared/colorTokens';
 import { decodeState, replaceUrl, type DemoState } from './_shared/urlState';
 
-const CONSTRAINTS: HalfPlane[] = [{ a1:2,a2:1,b:8 }, { a1:1,a2:2,b:8 }];
 const SCALE = 40, PAD = 30; // 坐标系 0..9
 const sx = (x:number)=> PAD + x*SCALE, sy = (y:number)=> 300 - PAD - y*SCALE;
 
-const defaults: DemoState = { demo: 'lp', params: { c1: 30, c2: 20, step: 0 }, step: 0 };
+const BASE_CONSTRAINTS: HalfPlane[] = [{ a1:2,a2:1,b:8 }, { a1:1,a2:2,b:8 }];
+
+type PresetKey = 'standard' | 'multiOptimum' | 'tight';
+const PRESETS: Record<PresetKey, { label: string; c: [number, number]; constraints: HalfPlane[]; note?: string }> = {
+  standard:     { label: '桌椅工坊（唯一最优）',   c: [30, 20], constraints: BASE_CONSTRAINTS },
+  multiOptimum: { label: '多重最优（整条边最优）',  c: [2,  1],  constraints: BASE_CONSTRAINTS, note: '多重最优：目标梯度 (2,1) 与约束 2x₁+x₂≤8 法向平行，整条约束边均为最优解。' },
+  tight:        { label: '偏向 x₂ 顶点最优',       c: [10, 40], constraints: BASE_CONSTRAINTS },
+};
+const PRESET_KEYS = Object.keys(PRESETS) as PresetKey[];
+
+const defaults: DemoState = { demo: 'lp', params: { preset: 0, c1: 30, c2: 20, step: 0 }, step: 0 };
 const init = typeof location !== 'undefined' ? decodeState(location.search, 'lp', defaults) : defaults;
 
+function initPresetKey(): PresetKey {
+  const idx = Math.min(Math.max(0, Math.round(init.params.preset ?? 0)), PRESET_KEYS.length - 1);
+  return PRESET_KEYS[idx];
+}
+
 export default function SimplexDemo() {
-  const [c1, setC1] = useState(init.params.c1 ?? 30);
-  const [c2, setC2] = useState(init.params.c2 ?? 20);
+  const [preset, setPreset] = useState<PresetKey>(initPresetKey());
+  const presetDef = PRESETS[preset];
+  const [c1, setC1] = useState(init.params.c1 ?? presetDef.c[0]);
+  const [c2, setC2] = useState(init.params.c2 ?? presetDef.c[1]);
   const [mode, setMode] = useState<'explore'|'step'>('explore');
-  const verts = useMemo(() => feasibleVertices(CONSTRAINTS), []);
+
+  const constraints = presetDef.constraints;
+  const verts = useMemo(() => feasibleVertices(constraints), [preset]);
   const best = useMemo(() => verts.reduce((b,p)=> objectiveValue([c1,c2],p) > objectiveValue([c1,c2],b) ? p : b, verts[0]), [c1,c2,verts]);
-  const trace = useMemo(() => solveSimplexTrace({ c:[c1,c2], A:[[2,1],[1,2]], b:[8,8] }), [c1,c2]);
+  const A = useMemo(() => constraints.map(k => [k.a1, k.a2]), [preset]);
+  const bVec = useMemo(() => constraints.map(k => k.b), [preset]);
+  const trace = useMemo(() => solveSimplexTrace({ c:[c1,c2], A, b: bVec }), [c1,c2,preset]);
   const t = useTrace(trace.frames.length, {
     onStep: (i) => {
-      replaceUrl({ demo: 'lp', params: { c1, c2, step: i }, step: i });
+      const pidx = PRESET_KEYS.indexOf(preset);
+      replaceUrl({ demo: 'lp', params: { preset: pidx, c1, c2, step: i }, step: i });
     },
   });
   const stepVertex = trace.frames[t.i]?.vertex ?? best;
   const poly = verts.map(p => `${sx(p.x)},${sy(p.y)}`).join(' ');
   const hi = mode==='step' ? stepVertex : best;
 
+  const handlePreset = (key: PresetKey) => {
+    setPreset(key);
+    const pd = PRESETS[key];
+    setC1(pd.c[0]);
+    setC2(pd.c[1]);
+    t.reset();
+    const pidx = PRESET_KEYS.indexOf(key);
+    replaceUrl({ demo: 'lp', params: { preset: pidx, c1: pd.c[0], c2: pd.c[1], step: 0 }, step: 0 });
+  };
   const handleC1 = (v: number) => {
     setC1(v);
     t.reset();
-    replaceUrl({ demo: 'lp', params: { c1: v, c2, step: 0 }, step: 0 });
+    const pidx = PRESET_KEYS.indexOf(preset);
+    replaceUrl({ demo: 'lp', params: { preset: pidx, c1: v, c2, step: 0 }, step: 0 });
   };
   const handleC2 = (v: number) => {
     setC2(v);
     t.reset();
-    replaceUrl({ demo: 'lp', params: { c1, c2: v, step: 0 }, step: 0 });
+    const pidx = PRESET_KEYS.indexOf(preset);
+    replaceUrl({ demo: 'lp', params: { preset: pidx, c1, c2: v, step: 0 }, step: 0 });
   };
+
+  const statusText = mode==='step'
+    ? (trace.frames[t.i]?.narration ?? '')
+    : `拖动系数：当前最优顶点 (${best.x.toFixed(2)}, ${best.y.toFixed(2)})，z=${objectiveValue([c1,c2],best).toFixed(1)}${presetDef.note ? '　【' + presetDef.note + '】' : ''}`;
 
   return (
     <div class="sx">
+      <label class="sx__preset">预设
+        <select value={preset} onChange={(e) => handlePreset((e.target as HTMLSelectElement).value as PresetKey)}>
+          {PRESET_KEYS.map(k => <option value={k}>{PRESETS[k].label}</option>)}
+        </select>
+      </label>
       <svg role="img" aria-label={`线性规划可行域，目标 ${c1}x1+${c2}x2，最优顶点 (${hi.x.toFixed(2)},${hi.y.toFixed(2)})`} viewBox="0 0 400 300" class="sx__svg">
         <polygon points={poly} fill={COLORS.primary} fill-opacity="0.12" stroke={COLORS.primary} stroke-width="1.5"/>
         {/* 目标函数等值线（过最优顶点） */}
@@ -65,17 +106,20 @@ export default function SimplexDemo() {
       </div>
       {mode==='step' && <PlayControls i={t.i} total={trace.frames.length} playing={t.playing} speed={t.speed}
         onPrev={t.prev} onNext={t.next} onToggle={()=>t.setPlaying(!t.playing)} onReset={t.reset} onSpeed={t.setSpeed} />}
-      <StatusLog text={mode==='step' ? (trace.frames[t.i]?.narration ?? '') : `拖动系数：当前最优顶点 (${best.x.toFixed(2)}, ${best.y.toFixed(2)})，z=${objectiveValue([c1,c2],best).toFixed(1)}`} />
+      <StatusLog text={statusText} />
       {/* 等价文本视图（DoD#6/PRD 8.5 无障碍可达） */}
       <details class="sx__alt">
         <summary>等价文本视图（无障碍）</summary>
+        <p>当前预设：{presetDef.label}</p>
         <p>目标函数：最大化 {c1}x₁ + {c2}x₂</p>
-        <p>约束：2x₁+x₂≤8，x₁+2x₂≤8，x₁,x₂≥0</p>
+        <p>约束：{constraints.map(c => `${c.a1}x₁+${c.a2}x₂≤${c.b}`).join('，')}，x₁,x₂≥0</p>
         <p>当前最优顶点：({hi.x.toFixed(2)}, {hi.y.toFixed(2)})，目标值 z={objectiveValue([c1,c2],hi).toFixed(1)}</p>
+        {presetDef.note && <p>{presetDef.note}</p>}
         {mode==='step' && <p>步进状态：{trace.frames[t.i]?.narration}</p>}
       </details>
       <style>{`.sx__svg{width:100%;max-width:480px;background:var(--color-paper);border-radius:var(--radius-sm);}
         .sx__ctrl{display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-end;margin-top:var(--space-3);}
+        .sx__preset{display:flex;flex-direction:column;gap:var(--space-1);color:var(--color-muted);font-size:var(--fs-caption);margin-bottom:var(--space-2);}
         .sx__mode{display:flex;flex-direction:column;gap:var(--space-1);color:var(--color-muted);font-size:var(--fs-caption);}
         .sx__alt{margin-top:var(--space-3);font-size:var(--fs-caption);color:var(--color-muted);}
         .sx__alt summary{cursor:pointer;color:var(--color-primary);}`}</style>
