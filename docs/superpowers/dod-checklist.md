@@ -296,26 +296,35 @@ grep draft/placeholder → 0 matches (PASS)
 |---|----------|------|------|
 | 1 | 页面齐全 | ✅ | 9 页 build 完成，sitemap 完整 |
 | 2 | 专题内容完整 | ✅⏳ | KaTeX/details 已验；内容九章节需人工确认 |
-| 3 | 4 演示可用 | ✅⏳ | 等价视图/noscript 已验；预设/速度/边界待 CI e2e |
-| 4 | 设计系统落地 | ✅⏳ | 无 hex 已验；色彩语义正确性需视觉核查 |
-| 5 | 性能达标 | ✅⏳ | Island 预算全过；Lighthouse ≥95 待 CI |
-| 6 | 无障碍达标 | ✅⏳ | axe 0 critical/全 25 e2e 通过；SVG 对比度待 Lighthouse |
-| 7 | 公式渲染 | ✅⏳ | 静态 KaTeX 无运行期 JS；aria-label 完整度待核查 |
-| 8 | 响应式 | ✅⚠️ | 26 e2e 全过；touch-action 软警告；iOS 实设备待 CI |
-| 9 | URL 分享 | ✅ | 20 e2e 全过，含 fallback |
-| 10 | 暗色可读 | ✅⏳ | 10 e2e 通过；SVG 内色 dark 不切换待人工核查 |
-| 11 | 构建门禁 | ✅⏳ | 本地全绿；CI/Vercel 待接入 |
-| 12 | SEO | ✅⏳ | JSON-LD/sitemap/robots 已验；OG 图需生成 |
+| 3 | 4 演示可用 | ✅ | 4 演示各 ≥2 预设（单纯形补 3 个）、双向步进/速度/重置、等价视图/noscript 已验 |
+| 4 | 设计系统落地 | ✅ | 无 hex；tokens 单一真相源；最小割 success 绿（8.4 合规）|
+| 5 | 性能达标 | ✅⏳ | Island 预算全过（≤上限 40%）；Lighthouse ≥95 待 CI |
+| 6 | 无障碍达标 | ✅ | axe 0 critical/serious（含暗色）；键盘/焦点陷阱/aria-live 全 e2e 通过 |
+| 7 | 公式渲染 | ✅ | 静态 KaTeX 无运行期 JS；每专题核心公式带纯文本解说，术语链接 ≥3 |
+| 8 | 响应式 | ✅⏳ | 桌面/平板 142 e2e 全过；iOS 真机待 CI（webkit）|
+| 9 | URL 分享 | ✅ | 20 e2e 全过，含非法回退 |
+| 10 | 暗色可读 | ✅ | dark-mode axe 71/71 全过；画布锁定浅底、灰阶/按钮前景已修 |
+| 11 | 构建门禁 | ✅⏳ | check 0/0/0、vitest 18、build 9 页、budget 全过；CI/Vercel 待接入远端 |
+| 12 | SEO | ✅ | JSON-LD/sitemap/robots/唯一 h1 已验；OG 图已生成 |
 
-**统计：✅ 已验 12/12（本地可验部分）/ ⏳ 待 CI 或需浏览器项目 7 个 / ⚠️ 有软性缺口 1 个**
+**统计：✅ 已验 12/12（本地可验部分）/ ⏳ 待 CI（Lighthouse/Vercel/iOS 真机）/ 无阻塞缺口**
 
-### 关键缺口与优先级
+### 终检后增补修复（2026-06-18，最终审查 + 收尾修复轮）
 
-| 缺口 | 严重度 | 行动 |
+- ✅ **DoD#3 SimplexDemo 预设**：补足 3 个预设（standard/multiOptimum/tight）+ 下拉，4 演示均 ≥2 预设。
+- ✅ **DoD#10 暗色对比度**：dark-mode 项目 axe **71/71 全过**（此前首页/专题列表各 1 个 color-contrast serious 违规）。修复：灰阶 token 暗色翻转（难度徽标等）、演示画布锁定浅底 `--demo-canvas`（PRD 8.1）、主按钮前景 `--btn-primary-fg`（暗色深墨字）。SVG 内部色不再是暗色缺口（画布锁定后 COLORS.* 对比达标）。
+- ✅ **DoD#12 OG 图**：`public/og-default.png`（1200×630）已生成。
+- ✅ **DoD#7 Dijkstra 术语链接**：补 `/glossary#optimal-substructure`，达 ≥3。
+- ✅ **DoD#11 hints 清零**：`astro check` 现 0 errors / 0 warnings / 0 hints。
+- ✅ **背包回溯可视化**：回溯绿色路径 + 已选物品侧栏（PRD 7.4）；回溯快照坐标修正。
+- ✅ **JsonLd 注入硬化**：`</script>` 序列转义。
+
+### 剩余项（均非阻塞，待 CI 或属 v1 可接受）
+
+| 项目 | 严重度 | 行动 |
 |------|--------|------|
-| Lighthouse ≥95 未验 | 高 | CI 接入后自动验证（lighthouserc.json 已就绪）|
-| shortest-path-dijkstra glossary 链接仅 2 个（需 ≥3）| 中 | 内容作者在 MDX 中补 1 个链接 |
-| OG 图为占位 | 中 | 设计/生成 og-default.png 并放入 public/ |
-| SVG 内部色在暗色模式不随 CSS 变量切换 | 中 | 可为 v1 "可读不破线"接受范围，v2 升级 colorTokens 支持暗色 |
-| touch-action:none 未设置 | 低 | 在 Figure.astro 或 SVG 容器加 `touch-action:none` |
-| iOS/Android 真实设备 e2e | 低 | CI 配置 devices 后自动运行 |
+| Lighthouse ≥95 未本地验 | 中 | CI 接入后自动验证（lighthouserc.json 就绪）|
+| CI 绿灯 / Vercel 部署 | 中 | 需用户提供 GitHub 远端 + Vercel 项目 |
+| iOS/Android 真机 e2e | 低 | 需 `playwright install webkit`；本地 chromium/tablet/dark 已全过 |
+| touch-action 未显式设 SVG | 低 | 响应式 e2e 已过；可在 Figure 容器加 `touch-action` 进一步保险 |
+| DijkstraDemo/MaxflowDemo 第 3 预设 | 低（v2）| DoD ≥2 已满足；PRD 7.2/7.3 的额外教学预设留 v2 |
