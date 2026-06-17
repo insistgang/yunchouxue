@@ -34,8 +34,9 @@ export function knapsackTrace(items: Item[], W: number): KnapsackTrace {
   for (let i = n; i >= 1; i--) {
     if (dp[i][w] !== dp[i - 1][w]) {
       chosen.push(items[i - 1].name);
+      const wOld = w; // 保存决策格的旧 w，让 snap 指向被决策的格 (i, wOld)
       w -= items[i - 1].w;
-      snap({ i, w }, { skip: dp[i - 1][w], take: null }, chosen, 'backtrack', `选中 ${items[i-1].name}，剩余容量 ${w}`);
+      snap({ i, w: wOld }, { skip: dp[i - 1][wOld], take: null }, chosen, 'backtrack', `选中 ${items[i-1].name}，剩余容量 ${w}`);
     } else {
       snap({ i, w }, { skip: dp[i - 1][w], take: null }, chosen, 'backtrack', `第 ${i} 件未选`);
     }
