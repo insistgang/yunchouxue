@@ -3,3 +3,6 @@
 .prose h3{margin-top:var(--space-8);scroll-margin-top:calc(var(--nav-height) + var(--space-4));}
 .prose p,.prose ul,.prose ol{margin:var(--space-4) 0;}
 .prose .katex-display{overflow-x:auto;overflow-y:hidden;padding:var(--space-2) 0;}
+/* DoD#6/WCAG 1.4.1: prose 段落内链接必须用下划线区分，不能仅靠颜色 */
+.prose a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
+.prose a:hover{text-decoration-thickness:2px;}

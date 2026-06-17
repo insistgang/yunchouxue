@@ -21,6 +21,8 @@ const { links } = Astro.props;
 </script>
 <style>
   .hamburger{display:none;font-size:1.5rem;background:none;border:none;cursor:pointer;color:var(--color-ink);}
+  /* hidden 属性必须优先于 display:flex，防止遮挡汉堡按钮（DoD#6 a11y 修复）*/
+  .drawer[hidden]{display:none!important;}
   .drawer{position:fixed;inset:0;background:var(--color-paper);z-index:60;padding:var(--space-8);display:flex;flex-direction:column;gap:var(--space-5);}
   .drawer a{font-size:var(--fs-h3);color:var(--color-ink);}
   .drawer__close{align-self:flex-end;font-size:1.5rem;background:none;border:none;cursor:pointer;}

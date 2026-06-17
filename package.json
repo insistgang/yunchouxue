@@ -11,7 +11,8 @@
     "check": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:budget": "node scripts/check-island-budget.mjs"
+    "check:budget": "node scripts/check-island-budget.mjs",
+    "test:e2e": "playwright test"
   },
   "keywords": [],
   "author": "",
@@ -31,7 +32,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.61.0",
     "@types/node": "^25.9.3",
+    "axe-core": "^4.12.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.9"
   }

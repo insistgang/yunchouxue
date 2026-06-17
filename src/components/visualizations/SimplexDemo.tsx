@@ -66,9 +66,19 @@ export default function SimplexDemo() {
       {mode==='step' && <PlayControls i={t.i} total={trace.frames.length} playing={t.playing} speed={t.speed}
         onPrev={t.prev} onNext={t.next} onToggle={()=>t.setPlaying(!t.playing)} onReset={t.reset} onSpeed={t.setSpeed} />}
       <StatusLog text={mode==='step' ? (trace.frames[t.i]?.narration ?? '') : `拖动系数：当前最优顶点 (${best.x.toFixed(2)}, ${best.y.toFixed(2)})，z=${objectiveValue([c1,c2],best).toFixed(1)}`} />
+      {/* 等价文本视图（DoD#6/PRD 8.5 无障碍可达） */}
+      <details class="sx__alt">
+        <summary>等价文本视图（无障碍）</summary>
+        <p>目标函数：最大化 {c1}x₁ + {c2}x₂</p>
+        <p>约束：2x₁+x₂≤8，x₁+2x₂≤8，x₁,x₂≥0</p>
+        <p>当前最优顶点：({hi.x.toFixed(2)}, {hi.y.toFixed(2)})，目标值 z={objectiveValue([c1,c2],hi).toFixed(1)}</p>
+        {mode==='step' && <p>步进状态：{trace.frames[t.i]?.narration}</p>}
+      </details>
       <style>{`.sx__svg{width:100%;max-width:480px;background:var(--color-paper);border-radius:var(--radius-sm);}
         .sx__ctrl{display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-end;margin-top:var(--space-3);}
-        .sx__mode{display:flex;flex-direction:column;gap:var(--space-1);color:var(--color-muted);font-size:var(--fs-caption);}`}</style>
+        .sx__mode{display:flex;flex-direction:column;gap:var(--space-1);color:var(--color-muted);font-size:var(--fs-caption);}
+        .sx__alt{margin-top:var(--space-3);font-size:var(--fs-caption);color:var(--color-muted);}
+        .sx__alt summary{cursor:pointer;color:var(--color-primary);}`}</style>
     </div>
   );
 }
