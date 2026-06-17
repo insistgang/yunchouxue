@@ -6,3 +6,7 @@ dist/
 .DS_Store
 .env
 .env.*
+
+# e2e 测试产物
+playwright-report/
+test-results/
