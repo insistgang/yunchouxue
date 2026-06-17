@@ -117,7 +117,7 @@ export default function SimplexDemo() {
         {presetDef.note && <p>{presetDef.note}</p>}
         {mode==='step' && <p>步进状态：{trace.frames[t.i]?.narration}</p>}
       </details>
-      <style>{`.sx__svg{width:100%;max-width:480px;background:var(--color-paper);border-radius:var(--radius-sm);}
+      <style>{`.sx__svg{width:100%;max-width:480px;background:var(--demo-canvas);border-radius:var(--radius-sm);}
         .sx__ctrl{display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-end;margin-top:var(--space-3);}
         .sx__preset{display:flex;flex-direction:column;gap:var(--space-1);color:var(--color-muted);font-size:var(--fs-caption);margin-bottom:var(--space-2);}
         .sx__mode{display:flex;flex-direction:column;gap:var(--space-1);color:var(--color-muted);font-size:var(--fs-caption);}

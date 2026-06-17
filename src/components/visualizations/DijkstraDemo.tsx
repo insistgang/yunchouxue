@@ -89,7 +89,7 @@ export default function DijkstraDemo() {
           <tbody>{g.nodes.map(n => <tr><td>{n.id}</td><td>{f.dist[n.id]===Infinity?'∞':f.dist[n.id]}</td><td>{f.prev[n.id]??'—'}</td></tr>)}</tbody>
         </table>
       </details>
-      <style>{`.dj__svg{width:100%;background:var(--color-paper);border-radius:var(--radius-sm);}
+      <style>{`.dj__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);}
         .dj__preset{display:block;margin:0 0 var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
         .dj__warn{margin:var(--space-1) 0 var(--space-2);padding:var(--space-2) var(--space-3);background:color-mix(in srgb,var(--color-warning) 8%,transparent);border-left:4px solid var(--color-warning);border-radius:var(--radius-sm);font-size:var(--fs-caption);color:var(--color-body);}
         .dj__alt{margin-top:var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}

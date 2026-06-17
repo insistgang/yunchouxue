@@ -86,7 +86,7 @@ export default function MaxflowDemo() {
         {f.augmentPath && <p>增广路径：{f.augmentPath.join(' → ')}</p>}
         {f.minCut && <p>最小割：S={f.minCut.S.join(',')} / T={f.minCut.T.join(',')}</p>}
       </details>
-      <style>{`.mf__svg{width:100%;background:var(--color-paper);border-radius:var(--radius-sm);} .mf__val{color:var(--color-body);font-size:var(--fs-caption);}
+      <style>{`.mf__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);} .mf__val{color:var(--color-body);font-size:var(--fs-caption);}
         .mf__preset{display:block;margin:0 0 var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
         .mf__alt{margin-top:var(--space-3);font-size:var(--fs-caption);color:var(--color-muted);}
         .mf__alt summary{cursor:pointer;color:var(--color-primary);}`}</style>

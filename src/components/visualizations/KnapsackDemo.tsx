@@ -111,7 +111,7 @@ export default function KnapsackDemo() {
         <ol>{trace.frames.map((fr, k) => <li hidden={k !== t.i}>{fr.narration}</li>)}</ol>
       </details>
       <style>{`.ks__layout{display:flex;gap:var(--space-4);align-items:flex-start;flex-wrap:wrap;}
-        .ks__svg{width:100%;max-height:480px;background:var(--color-paper);border-radius:var(--radius-sm);}
+        .ks__svg{width:100%;max-height:480px;background:var(--demo-canvas);border-radius:var(--radius-sm);}
         .ks__preset,.ks__alt{display:block;margin:var(--space-2) 0;color:var(--color-muted);font-size:var(--fs-caption);}
         .ks__sidebar{min-width:120px;background:color-mix(in srgb,var(--color-success,#22c55e) 8%,var(--color-paper));border:1px solid color-mix(in srgb,var(--color-success,#22c55e) 30%,transparent);border-radius:var(--radius-sm);padding:var(--space-3);font-size:var(--fs-caption);}
         .ks__sidebar-title{font-weight:600;color:var(--color-success,#22c55e);margin:0 0 var(--space-2);}

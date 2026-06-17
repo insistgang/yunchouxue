@@ -84,7 +84,7 @@ export default function SimplexHook() {
       <style>{`
         .shk { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--gray-200); }
         .shk__label { color: var(--color-body); font-size: var(--fs-caption); margin: 0; }
-        .shk__svg { width: 100%; max-width: 400px; border-radius: var(--radius-sm); }
+        .shk__svg { width: 100%; max-width: 400px; border-radius: var(--radius-sm); background: var(--demo-canvas); }
         .shk__ctrl { display: flex; gap: var(--space-5); flex-wrap: wrap; }
         .shk__hint { color: var(--color-muted); font-size: var(--fs-caption); margin: 0; }
         .shk__hint a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 2px; }

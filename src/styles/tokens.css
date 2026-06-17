@@ -3,6 +3,11 @@
   --color-paper: #FFFFFF;
   --color-canvas: #FAFAF7;
   --color-surface: #F8FAFC;
+  /* 演示画布锁定浅底（PRD 8.1：画布深浅底全站锁定一致，不随主题翻转；
+     故意不在暗色块覆盖，使 SVG 内 COLORS.* 浅色系内容在两种主题下对比度均达标） */
+  --demo-canvas: #FFFFFF;
+  /* 主按钮前景：浅色主题白字；暗色主题主色被调亮(#5B9BD5)，白字对比不足，故改深墨字(DoD#10) */
+  --btn-primary-fg: #FFFFFF;
   /* 文本 */
   --color-ink: #1A1A2E;
   --color-body: #2D3748;
@@ -53,5 +58,11 @@
     --color-primary:#5B9BD5; --color-primary-700:#7FB3E0;
     --color-accent:#E08A3C; --color-success:#4ADE80; --color-warning:#D9A441; --color-danger:#F87171;
     --color-focus-ring:#5B9BD5;
+    /* 灰阶翻转：用作背景的浅灰(50-300)在暗色下变深，文本/高对比端(600-900)变浅，
+       保证 gray-100 背景上的 muted 文本（如难度徽标、代码块）对比度不破 AA(DoD#10) */
+    --gray-50:#1E293B; --gray-100:#1E293B; --gray-200:#334155; --gray-300:#475569;
+    --gray-400:#64748B; --gray-500:#94A3B8; --gray-600:#CBD5E1; --gray-700:#E2E8F0;
+    --gray-800:#F1F5F9; --gray-900:#F8FAFC;
+    --btn-primary-fg:#0F172A;
   }
 }
