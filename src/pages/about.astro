@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+---
+<BaseLayout title="关于 — 运筹学教学站" description="项目定位、内容理念、技术栈与开源许可。">
+  <div class="wrap prose">
+    <Breadcrumb items={[{label:'首页',href:'/'},{label:'关于'}]} />
+    <h1>关于本站</h1>
+    <h2>我们做什么</h2><p>把运筹学做成"一本活的入门书"：先建立直觉、再亲手验证、最后形式化。</p>
+    <h2>面向谁</h2><p>在校大学生、自学者/转专业者、运筹学与算法爱好者。</p>
+    <h2>内容理念</h2><p>遵循 explorable explanations：交互是"轻推已给的例子并主动引导注意现象"，而非空白沙盒。</p>
+    <h2>技术栈</h2><p>Astro 静态站 · 构建期 KaTeX 公式 · islands 按需水合 · 零后端。</p>
+    <h2>内容许可</h2><p>代码 <a href="https://opensource.org/license/mit" rel="noopener">MIT</a>；内容 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>。</p>
+    <h2>参考资料</h2><p>Bret Victor《Explorable Explanations》、Setosa、VisuAlgo、MIT OpenCourseWare、KaTeX。</p>
+    <h2>联系</h2><p>GitHub Issues 反馈与共建。</p>
+  </div>
+</BaseLayout>
+<style>.wrap{max-width:var(--content-width);margin:0 auto;padding:var(--space-12) var(--space-4);}</style>
