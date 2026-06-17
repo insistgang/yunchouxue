@@ -1,0 +1,13 @@
+---
+interface Props { lang?: string; }
+const { lang } = Astro.props;
+---
+<figure class="code">
+  {lang && <figcaption class="code__lang">{lang}</figcaption>}
+  <pre><slot /></pre>
+</figure>
+<style>
+  .code{margin:var(--space-6) 0;border:1px solid var(--gray-200);border-radius:var(--radius-md);background:var(--gray-100);overflow:hidden;}
+  .code__lang{font-size:var(--fs-overline);color:var(--color-muted);padding:var(--space-2) var(--space-4);border-bottom:1px solid var(--gray-200);}
+  pre{margin:0;padding:var(--space-4);overflow-x:auto;line-height:var(--lh-code);}
+</style>

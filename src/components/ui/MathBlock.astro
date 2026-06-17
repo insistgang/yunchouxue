@@ -1,0 +1,7 @@
+---
+// 用于在 .astro 中包裹 KaTeX 渲染后的块级公式；MDX 中直接用 $$ 由 rehype-katex 处理
+---
+<div class="mathblock"><slot /></div>
+<style>
+  .mathblock{margin:var(--space-6) 0;overflow-x:auto;padding-left:var(--space-4);border-left:1px solid var(--color-primary);}
+</style>
