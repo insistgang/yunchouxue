@@ -1,0 +1,19 @@
+---
+interface Props { n: number; title: string; }
+const { n, title } = Astro.props;
+---
+<figure class="figure">
+  <figcaption class="figure__head">
+    <span class="figure__over">交互演示 / Figure {n}</span>
+    <span class="figure__title">{title}</span>
+  </figcaption>
+  <div class="figure__body"><slot /></div>
+  <noscript><p class="figure__noscript">本交互演示需 JavaScript。静态替代图与完整文字说明见下方正文。</p></noscript>
+</figure>
+<style>
+  .figure{margin:var(--space-8) 0;background:var(--color-surface);border:1px solid var(--gray-200);border-radius:var(--radius-md);padding:var(--space-5);}
+  .figure__head{display:flex;flex-direction:column;margin-bottom:var(--space-4);}
+  .figure__over{font-size:var(--fs-overline);color:var(--color-muted);letter-spacing:.08em;text-transform:uppercase;}
+  .figure__title{font-size:var(--fs-h3);color:var(--color-ink);font-weight:700;}
+  .figure__noscript{color:var(--color-muted);}
+</style>
