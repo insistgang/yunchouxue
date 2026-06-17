@@ -1,0 +1,18 @@
+---
+interface Props { items: { label: string; href?: string }[]; }
+const { items } = Astro.props;
+---
+<nav class="bc" aria-label="面包屑">
+  <ol>
+    {items.map((it, i) => (
+      <li>
+        {it.href ? <a href={it.href}>{it.label}</a> : <span aria-current="page">{it.label}</span>}
+        {i < items.length - 1 && <span class="bc__sep" aria-hidden="true">/</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+<style>
+  .bc ol{display:flex;gap:var(--space-2);list-style:none;padding:0;margin:0;font-size:var(--fs-caption);color:var(--color-muted);}
+  .bc li{display:flex;gap:var(--space-2);align-items:center;}
+</style>
