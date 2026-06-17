@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import TopicCard from '@/components/ui/TopicCard.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+const topics = (await getCollection('topics', (t: CollectionEntry<'topics'>) => !t.data.draft)).sort((a: CollectionEntry<'topics'>, b: CollectionEntry<'topics'>) => a.data.order - b.data.order);
+const themes: string[] = [...new Set<string>(topics.map((t: CollectionEntry<'topics'>) => t.data.theme as string))];
+const difficulties: string[] = ['入门','进阶','高级'];
+---
+<BaseLayout title="专题 — 运筹学教学站" description="全部运筹学专题，可按主题、难度、是否含交互筛选。">
+  <div class="wrap">
+    <Breadcrumb items={[{label:'首页',href:'/'},{label:'专题'}]} />
+    <h1>专题</h1>
+    <form class="filters" id="filters">
+      <label>主题
+        <select name="theme"><option value="">全部</option>{themes.map((t: string) => <option value={t}>{t}</option>)}</select>
+      </label>
+      <label>难度
+        <select name="difficulty"><option value="">全部</option>{difficulties.map((d: string) => <option value={d}>{d}</option>)}</select>
+      </label>
+      <label class="filters__check"><input type="checkbox" name="interactive" /> 仅含交互</label>
+    </form>
+    <div class="grid" id="grid">
+      {topics.map((t: CollectionEntry<'topics'>) => (
+        <div class="grid__item" data-theme={t.data.theme} data-difficulty={t.data.difficulty} data-interactive={String(t.data.hasInteractive)}>
+          <TopicCard href={`/topics/${t.id}`} theme={t.data.theme} title={t.data.title}
+            summary={t.data.summary} difficulty={t.data.difficulty}
+            readingTime={t.data.readingTime} hasInteractive={t.data.hasInteractive} />
+        </div>
+      ))}
+    </div>
+    <p class="empty" id="empty" hidden>没有符合条件的专题。<button type="button" id="clear" class="btn btn--text">清除筛选</button></p>
+  </div>
+</BaseLayout>
+<script>
+  const form = document.getElementById('filters') as HTMLFormElement;
+  const items = [...document.querySelectorAll<HTMLElement>('.grid__item')];
+  const empty = document.getElementById('empty')!;
+  function apply() {
+    const fd = new FormData(form);
+    const theme = fd.get('theme'), diff = fd.get('difficulty'), inter = fd.get('interactive');
+    let shown = 0;
+    for (const it of items) {
+      const ok = (!theme || it.dataset.theme === theme)
+        && (!diff || it.dataset.difficulty === diff)
+        && (!inter || it.dataset.interactive === 'true');
+      it.hidden = !ok; if (ok) shown++;
+    }
+    empty.hidden = shown !== 0;
+  }
+  form.addEventListener('change', apply);
+  document.getElementById('clear')!.addEventListener('click', () => { form.reset(); apply(); });
+</script>
+<style>
+  .wrap{max-width:var(--wide-width);margin:0 auto;padding:var(--space-12) var(--space-4);}
+  .filters{display:flex;gap:var(--space-6);flex-wrap:wrap;margin:var(--space-6) 0;align-items:center;}
+  .filters label{display:flex;gap:var(--space-2);align-items:center;color:var(--color-muted);font-size:var(--fs-caption);}
+  .filters select{padding:var(--space-2);border:1px solid var(--gray-300);border-radius:var(--radius-sm);}
+  .grid{display:grid;grid-template-columns:1fr;gap:var(--space-6);}
+  @media (min-width:768px){ .grid{grid-template-columns:1fr 1fr;} }
+  @media (min-width:1024px){ .grid{grid-template-columns:1fr 1fr 1fr;} }
+  .grid__item[hidden]{display:none;}
+  .empty{color:var(--color-muted);text-align:center;padding:var(--space-12);}
+</style>
