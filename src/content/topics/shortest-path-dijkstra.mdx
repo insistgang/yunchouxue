@@ -32,7 +32,7 @@ import Callout from '@/components/ui/Callout.astro';
 
 **单源最短路径问题**（Single-Source Shortest Path, SSSP）：给定源点 $s \in V$，对每个节点 $v \in V$ 求从 $s$ 到 $v$ 的最短路径长度 $\delta(s, v)$（若 $v$ 不可达则为 $+\infty$）及对应路径。
 
-**最优子结构**：设 $p: s \rightsquigarrow u \rightsquigarrow v$ 是 $s$ 到 $v$ 的一条最短路径，且 $u$ 是其中某个中间节点，则 $p$ 的子路径 $s \rightsquigarrow u$ 必然也是 $s$ 到 $u$ 的最短路径。用人话说：最短路径的任意子路径也是最短路径——否则替换子路径可得更短路，矛盾。这个性质是 Dijkstra 算法贪心正确性的基础，也使最短路径问题具有动态规划可解性。
+[**最优子结构**](/glossary#optimal-substructure)：设 $p: s \rightsquigarrow u \rightsquigarrow v$ 是 $s$ 到 $v$ 的一条最短路径，且 $u$ 是其中某个中间节点，则 $p$ 的子路径 $s \rightsquigarrow u$ 必然也是 $s$ 到 $u$ 的最短路径。用人话说：最短路径的任意子路径也是最短路径——否则替换子路径可得更短路，矛盾。这个性质是 Dijkstra 算法贪心正确性的基础，也使最短路径问题具有动态规划可解性。
 
 非负权假设的必要性：当所有边权 $w(u,v) \ge 0$ 时，"从当前最小 dist 节点出发不可能找到更短路"——因为后续路径只会让距离增加或不变，贪心成立。若存在负权边，这个保证就失效了（见"常见误区"节）。
 
