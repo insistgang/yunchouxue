@@ -1,7 +1,55 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import TopicCard from '@/components/ui/TopicCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+const topics = (await getCollection('topics', (t: CollectionEntry<'topics'>) => !t.data.draft))
+  .sort((a: CollectionEntry<'topics'>, b: CollectionEntry<'topics'>) => a.data.order - b.data.order);
 ---
-<BaseLayout title="运筹学教学站" description="把运筹学讲清楚的交互式教学站">
-  <h1>运筹学教学站</h1>
-  <p>地基已就位。</p>
+<BaseLayout title="运筹学教学站 — 把运筹学讲清楚" description="面向大学生与自学者的运筹学交互式教学站：先建立直觉，再亲手验证，最后形式化。">
+  <section class="hero">
+    <p class="hero__over">交互式教学 · Explorable Explanations</p>
+    <h1 class="hero__title">把运筹学，<br/>讲到看得见、玩得动、能验证</h1>
+    <p class="hero__lead">先用具体例子建立几何直觉，再亲手拖动参数验证，最后形式化为定义与公式。</p>
+    <div class="hero__cta">
+      <a class="btn btn--primary" href="/topics">浏览专题</a>
+      <a class="btn btn--secondary" href="/about">了解理念</a>
+    </div>
+  </section>
+
+  <section class="grid-section">
+    <h2>四大旗舰专题</h2>
+    <div class="grid">
+      {topics.map((t: CollectionEntry<'topics'>) => (
+        <TopicCard href={`/topics/${t.id}`} theme={t.data.theme} title={t.data.title}
+          summary={t.data.summary} difficulty={t.data.difficulty}
+          readingTime={t.data.readingTime} hasInteractive={t.data.hasInteractive} />
+      ))}
+    </div>
+  </section>
+
+  <section class="path">
+    <h2>学习路径</h2>
+    <ol class="path__list">
+      <li>线性规划与单纯形法 — 优化的语言与几何</li>
+      <li>最短路径 Dijkstra — 图上的贪心与松弛</li>
+      <li>最大流与最小割 — 网络流的对偶之美</li>
+      <li>动态规划与 0-1 背包 — 用表换重复</li>
+    </ol>
+  </section>
 </BaseLayout>
+<style>
+  .hero{max-width:var(--wide-width);margin:0 auto;padding:var(--space-24) var(--space-4) var(--space-16);text-align:left;}
+  .hero__over{color:var(--color-muted);font-size:var(--fs-overline);letter-spacing:.08em;text-transform:uppercase;}
+  .hero__title{font-size:var(--fs-display);line-height:var(--lh-display);margin:var(--space-4) 0;}
+  .hero__lead{color:var(--color-muted);max-width:60ch;font-size:1.125rem;}
+  .hero__cta{display:flex;gap:var(--space-4);margin-top:var(--space-8);}
+  .btn{display:inline-flex;align-items:center;height:40px;padding:0 var(--space-5);border-radius:var(--radius-sm);font-weight:600;border:1px solid transparent;}
+  .btn--primary{background:var(--color-primary);color:#fff;}
+  .btn--secondary{color:var(--color-primary);border-color:var(--color-primary);}
+  .grid-section, .path{max-width:var(--wide-width);margin:0 auto;padding:var(--space-12) var(--space-4);}
+  .grid{display:grid;grid-template-columns:1fr;gap:var(--space-6);margin-top:var(--space-6);}
+  @media (min-width:768px){ .grid{grid-template-columns:1fr 1fr;} }
+  @media (min-width:1024px){ .grid{grid-template-columns:1fr 1fr 1fr;} }
+  .path__list{max-width:60ch;color:var(--color-body);line-height:2;}
+</style>
