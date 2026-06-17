@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import TopicCard from '@/components/ui/TopicCard.astro';
+import SimplexHook from '@/components/visualizations/SimplexHook';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 const topics = (await getCollection('topics', (t: CollectionEntry<'topics'>) => !t.data.draft))
@@ -15,6 +16,12 @@ const topics = (await getCollection('topics', (t: CollectionEntry<'topics'>) => 
       <a class="btn btn--primary" href="/topics">浏览专题</a>
       <a class="btn btn--secondary" href="/about">了解理念</a>
     </div>
+  </section>
+
+  <section class="hook-section">
+    <h2>亲手验证：线性规划几何直觉</h2>
+    <p class="hook-section__sub">拖动目标系数，看最优解如何在可行域顶点间切换。</p>
+    <SimplexHook client:visible />
   </section>
 
   <section class="grid-section">
@@ -52,4 +59,7 @@ const topics = (await getCollection('topics', (t: CollectionEntry<'topics'>) => 
   @media (min-width:768px){ .grid{grid-template-columns:1fr 1fr;} }
   @media (min-width:1024px){ .grid{grid-template-columns:1fr 1fr 1fr;} }
   .path__list{max-width:60ch;color:var(--color-body);line-height:2;}
+  .hook-section{max-width:var(--wide-width);margin:0 auto;padding:var(--space-12) var(--space-4);}
+  .hook-section h2{margin-bottom:var(--space-2);}
+  .hook-section__sub{color:var(--color-muted);margin:0 0 var(--space-6);}
 </style>
