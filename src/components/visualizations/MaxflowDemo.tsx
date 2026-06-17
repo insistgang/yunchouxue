@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { edmondsKarpTrace, type FlowNetwork } from '@/lib/maxflow';
 import { useTrace } from './_shared/useTrace';
 import PlayControls from './_shared/PlayControls';
@@ -36,10 +36,9 @@ export default function MaxflowDemo() {
   });
 
   // Apply URL-initialized step on first render
-  const _ = useMemo(() => {
+  useEffect(() => {
     const urlStep = Math.min(Math.max(0, init.step), trace.frames.length - 1);
     if (urlStep > 0) t.go(urlStep);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const f = trace.frames[t.i];
