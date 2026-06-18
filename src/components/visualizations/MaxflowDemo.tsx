@@ -144,7 +144,7 @@ export default function MaxflowDemo() {
           const isS = f.minCut?.S.includes(n.id);
           return (
             <g key={`orig-node-${n.id}`} transform={`translate(${n.x},${n.y})`}>
-              <circle r="16" fill={f.minCut ? (isS?COLORS.success:'#fff') : (f.bfsVisited.includes(n.id)?COLORS.accent:'#fff')} fill-opacity={f.minCut&&isS?0.15:1} stroke={COLORS.primary} stroke-width="2"/>
+              <circle r="16" fill={f.minCut ? (isS?COLORS.success:COLORS.paper) : (f.bfsVisited.includes(n.id)?COLORS.accent:COLORS.paper)} fill-opacity={f.minCut&&isS?0.15:1} stroke={COLORS.primary} stroke-width="2"/>
               <text dy="0.35em" text-anchor="middle" font-size="12" fill={COLORS.ink}>{n.id}</text>
             </g>
           );
@@ -203,7 +203,7 @@ export default function MaxflowDemo() {
           const isS = f.minCut?.S.includes(n.id);
           return (
             <g key={`res-node-${n.id}`} transform={`translate(${n.x},${n.y})`}>
-              <circle r="16" fill={f.minCut ? (isS?COLORS.success:'#fff') : (f.bfsVisited.includes(n.id)?COLORS.accent:'#fff')} fill-opacity={f.minCut&&isS?0.15:1} stroke={COLORS.primary} stroke-width="2"/>
+              <circle r="16" fill={f.minCut ? (isS?COLORS.success:COLORS.paper) : (f.bfsVisited.includes(n.id)?COLORS.accent:COLORS.paper)} fill-opacity={f.minCut&&isS?0.15:1} stroke={COLORS.primary} stroke-width="2"/>
               <text dy="0.35em" text-anchor="middle" font-size="12" fill={COLORS.ink}>{n.id}</text>
             </g>
           );
