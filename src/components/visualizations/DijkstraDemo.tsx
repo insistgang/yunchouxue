@@ -110,39 +110,57 @@ export default function DijkstraDemo() {
         </select>
       </label>
       {warn && <p class="dj__warn" role="note">⚠ {warn}</p>}
-      <svg role="img" aria-label={`最短路演示：${f.narration}`}
-        viewBox={presetViewBox ?? '0 0 480 240'}
-        class={`dj__svg${preset === 'grid' ? ' dj__svg--grid' : ''}`}>
-        {g.edges.map(e => {
-          const a = g.nodes.find(n => n.id === e.from)!, b = g.nodes.find(n => n.id === e.to)!;
-          const hot = f.relaxing && f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to;
-          return <g>
-            <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={hot ? COLORS.accent : COLORS.gray300} stroke-width={hot ? 3 : 1.5} />
-            <text x={(a.x+b.x)/2} y={(a.y+b.y)/2 - 4} text-anchor="middle" font-size="11" fill={COLORS.muted}>{e.w}</text>
-          </g>;
-        })}
-        {g.nodes.map(n => (
-          <g transform={`translate(${n.x},${n.y})`}>
-            <circle r={nodeR} fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
-            <text dy="0.35em" text-anchor="middle" font-size={nodeFontSize} fill={COLORS.ink}>{n.id}</text>
-            <text y={distLabelY} text-anchor="middle" font-size={distFontSize} fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
-          </g>
-        ))}
-      </svg>
+      <div class="dj__layout">
+        <svg role="img" aria-label={`最短路演示：${f.narration}`}
+          viewBox={presetViewBox ?? '0 0 480 240'}
+          class={`dj__svg${preset === 'grid' ? ' dj__svg--grid' : ''}`}>
+          {g.edges.map(e => {
+            const a = g.nodes.find(n => n.id === e.from)!, b = g.nodes.find(n => n.id === e.to)!;
+            const hot = f.relaxing && f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to;
+            return <g>
+              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={hot ? COLORS.accent : COLORS.gray300} stroke-width={hot ? 3 : 1.5} />
+              <text x={(a.x+b.x)/2} y={(a.y+b.y)/2 - 4} text-anchor="middle" font-size="11" fill={COLORS.muted}>{e.w}</text>
+            </g>;
+          })}
+          {g.nodes.map(n => (
+            <g transform={`translate(${n.x},${n.y})`}>
+              <circle r={nodeR} fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
+              <text dy="0.35em" text-anchor="middle" font-size={nodeFontSize} fill={COLORS.ink}>{n.id}</text>
+              <text y={distLabelY} text-anchor="middle" font-size={distFontSize} fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
+            </g>
+          ))}
+        </svg>
+        <div class="dj__table-wrap" aria-label="dist/prev 实时表格" role="region" aria-live="polite">
+          <table class="dj__table">
+            <thead><tr><th>节点</th><th>dist</th><th>prev</th></tr></thead>
+            <tbody>
+              {g.nodes.map(n => {
+                const hi = n.id === f.current || (f.relaxing != null && f.relaxing.edge.to === n.id);
+                return (
+                  <tr class={hi ? 'dj__table-row--active' : ''} key={n.id}>
+                    <td>{n.id}</td>
+                    <td>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</td>
+                    <td>{f.prev[n.id] ?? '—'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <PlayControls i={t.i} total={trace.frames.length} playing={t.playing} speed={t.speed}
         onPrev={t.prev} onNext={t.next} onToggle={() => t.setPlaying(!t.playing)} onReset={t.reset} onSpeed={t.setSpeed} />
       <StatusLog text={f.narration} />
-      <details class="dj__alt"><summary>等价文本视图（无障碍）</summary>
-        <table><thead><tr><th>节点</th><th>dist</th><th>prev</th></tr></thead>
-          <tbody>{g.nodes.map(n => <tr><td>{n.id}</td><td>{f.dist[n.id]===Infinity?'∞':f.dist[n.id]}</td><td>{f.prev[n.id]??'—'}</td></tr>)}</tbody>
-        </table>
-      </details>
-      <style>{`.dj__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);}
+      <style>{`.dj__layout{display:flex;gap:var(--space-4);align-items:flex-start;flex-wrap:wrap;}
+        .dj__svg{flex:1 1 280px;min-width:0;width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);}
         .dj__svg--grid{max-height:480px;}
         .dj__preset{display:block;margin:0 0 var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
         .dj__warn{margin:var(--space-1) 0 var(--space-2);padding:var(--space-2) var(--space-3);background:color-mix(in srgb,var(--color-warning) 8%,transparent);border-left:4px solid var(--color-warning);border-radius:var(--radius-sm);font-size:var(--fs-caption);color:var(--color-body);}
-        .dj__alt{margin-top:var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
-        .dj__alt table{border-collapse:collapse;} .dj__alt td,.dj__alt th{border:1px solid var(--gray-200);padding:2px 8px;}`}</style>
+        .dj__table-wrap{flex:0 0 auto;overflow-x:auto;}
+        .dj__table{border-collapse:collapse;font-size:var(--fs-caption);white-space:nowrap;}
+        .dj__table th,.dj__table td{border:1px solid var(--gray-200);padding:3px 10px;text-align:center;}
+        .dj__table th{background:var(--gray-100,#f7fafc);color:var(--color-muted);}
+        .dj__table-row--active td{background:color-mix(in srgb,var(--color-accent,#B45309) 12%,transparent);font-weight:600;}`}</style>
     </div>
   );
 }
