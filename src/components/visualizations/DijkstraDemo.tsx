@@ -98,6 +98,17 @@ export default function DijkstraDemo() {
   const colorOf = (id: string) =>
     f.settled.includes(id) ? COLORS.success : id === f.current ? COLORS.accent
     : f.queue.includes(id) ? COLORS.primary : COLORS.gray400;
+
+  // Shortest-path tree edges: prev[v]=u AND v is settled
+  const sptEdgeSet = new Set<string>();
+  for (const [v, u] of Object.entries(f.prev)) {
+    if (u != null && f.settled.includes(v)) {
+      sptEdgeSet.add(`${u}->${v}`);
+      sptEdgeSet.add(`${v}->${u}`); // for undirected display matching
+    }
+  }
+  const isSpt = (from: string, to: string) => sptEdgeSet.has(`${from}->${to}`);
+
   return (
     <div class="dj">
       <label class="dj__preset">预设
@@ -116,16 +127,42 @@ export default function DijkstraDemo() {
         <svg role="img" aria-label={`最短路演示：${f.narration}`}
           viewBox={presetViewBox ?? '0 0 480 240'}
           class={`dj__svg${preset === 'grid' ? ' dj__svg--grid' : ''}`}>
+          {g.edges.filter(e => isSpt(e.from, e.to)).map(e => {
+            const a = g.nodes.find(n => n.id === e.from)!;
+            const b = g.nodes.find(n => n.id === e.to)!;
+            return (
+              <line
+                key={`spt-${e.from}-${e.to}`}
+                x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                stroke={COLORS.success}
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            );
+          })}
           {g.edges.map(e => {
-            const a = g.nodes.find(n => n.id === e.from)!, b = g.nodes.find(n => n.id === e.to)!;
+            const a = g.nodes.find(n => n.id === e.from)!;
+            const b = g.nodes.find(n => n.id === e.to)!;
             const hot = f.relaxing != null && (
               (f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to) ||
               (!g.directed && f.relaxing.edge.from === e.to && f.relaxing.edge.to === e.from)
             );
-            return <g>
-              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={hot ? COLORS.accent : COLORS.gray300} stroke-width={hot ? 3 : 1.5} />
-              <text x={(a.x+b.x)/2} y={(a.y+b.y)/2 - 4} text-anchor="middle" font-size="11" fill={COLORS.muted}>{e.w}</text>
-            </g>;
+            const alreadySpt = isSpt(e.from, e.to);
+            return (
+              <g key={`edge-${e.from}-${e.to}`}>
+                <line
+                  x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                  stroke={hot ? COLORS.accent : COLORS.gray300}
+                  stroke-width={hot ? 3 : 1.5}
+                  opacity={alreadySpt && !hot ? 0 : 1}
+                />
+                <text
+                  x={(a.x+b.x)/2} y={(a.y+b.y)/2 - 4}
+                  text-anchor="middle"
+                  font-size={distFontSize}
+                  fill={COLORS.muted}>{e.w}</text>
+              </g>
+            );
           })}
           {g.nodes.map(n => (
             <g transform={`translate(${n.x},${n.y})`}>
