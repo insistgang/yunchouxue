@@ -16,7 +16,7 @@ export function useTrace(total: number, opts?: { onStep?: (i: number) => void })
   useEffect(() => {
     if (!playing) { if (timer.current) clearTimeout(timer.current); return; }
     if (i >= total - 1) { setPlaying(false); return; }
-    if (prefersReducedMotion()) { go(i + 1); return; } // 瞬时步进
+    if (prefersReducedMotion()) { go(total - 1); setPlaying(false); return; } // 直跳末帧
     const base = 900;
     timer.current = window.setTimeout(() => go(i + 1), base / speed);
     return () => { if (timer.current) clearTimeout(timer.current); };
@@ -25,6 +25,8 @@ export function useTrace(total: number, opts?: { onStep?: (i: number) => void })
   // 键盘：空格播放/暂停、←→ 单步、+/- 调速（PRD 8.2）
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
+      const tag = (document.activeElement as HTMLElement | null)?.tagName ?? '';
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
       if (e.key === ' ') { e.preventDefault(); setPlaying(p => !p); }
       else if (e.key === 'ArrowRight') next();
       else if (e.key === 'ArrowLeft') prev();

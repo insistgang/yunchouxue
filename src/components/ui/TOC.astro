@@ -3,29 +3,46 @@ interface Props { headings: { depth: number; slug: string; text: string }[]; }
 const { headings } = Astro.props;
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
-<nav class="toc" aria-label="目录">
+<!-- 桌面端：sticky 侧栏 -->
+<nav class="toc toc--desktop" aria-label="目录">
   <p class="toc__title">目录</p>
   <ul>
     {toc.map(h => <li class={`toc__d${h.depth}`}><a href={`#${h.slug}`} data-slug={h.slug}>{h.text}</a></li>)}
   </ul>
 </nav>
+<!-- 移动端：可折叠 details 入口 -->
+<details class="toc toc--mobile">
+  <summary class="toc__title">目录</summary>
+  <ul>
+    {toc.map(h => <li class={`toc__d${h.depth}`}><a href={`#${h.slug}`} data-slug={h.slug}>{h.text}</a></li>)}
+  </ul>
+</details>
 <script>
   const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
   const map = new Map(links.map(l => [l.dataset.slug!, l]));
   const obs = new IntersectionObserver((es) => {
     for (const e of es) if (e.isIntersecting) {
       links.forEach(l => l.removeAttribute('aria-current'));
-      map.get((e.target as HTMLElement).id)?.setAttribute('aria-current', 'true');
+      map.get((e.target as HTMLElement).id)?.setAttribute('aria-current', 'location');
     }
   }, { rootMargin: '-80px 0px -70% 0px' });
   document.querySelectorAll('main h2[id], main h3[id]').forEach(h => obs.observe(h));
 </script>
 <style>
-  .toc{position:sticky;top:calc(var(--nav-height) + var(--space-4));font-size:var(--fs-caption);}
+  .toc--desktop{position:sticky;top:calc(var(--nav-height) + var(--space-4));font-size:var(--fs-caption);}
   .toc__title{font-weight:700;color:var(--color-ink);margin:0 0 var(--space-2);}
   .toc ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-1);}
   .toc__d3{padding-left:var(--space-3);}
   .toc a{color:var(--color-muted);}
-  .toc a[aria-current="true"]{color:var(--color-primary);font-weight:600;}
-  @media (max-width:1023px){ .toc{display:none;} }
+  .toc a[aria-current="location"]{color:var(--color-primary);font-weight:600;}
+  /* 桌面端隐藏折叠版，移动端隐藏侧栏版 */
+  @media (min-width:1024px){ .toc--mobile{display:none;} }
+  @media (max-width:1023px){ .toc--desktop{display:none;} }
+  /* 移动端 details 样式 */
+  .toc--mobile{font-size:var(--fs-caption);margin-bottom:var(--space-4);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:var(--space-3);}
+  .toc--mobile summary{cursor:pointer;list-style:none;font-weight:700;color:var(--color-ink);margin:0;}
+  .toc--mobile summary::-webkit-details-marker{display:none;}
+  .toc--mobile summary::before{content:'▶ ';}
+  .toc--mobile[open] summary::before{content:'▼ ';}
+  .toc--mobile ul{margin-top:var(--space-2);}
 </style>

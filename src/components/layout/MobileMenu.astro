@@ -13,8 +13,19 @@ const { links } = Astro.props;
   const btn = document.querySelector<HTMLButtonElement>('.hamburger')!;
   const drawer = document.getElementById('mobile-drawer')!;
   const close = drawer.querySelector<HTMLButtonElement>('.drawer__close')!;
-  const open = () => { drawer.hidden = false; btn.setAttribute('aria-expanded','true'); close.focus(); };
-  const shut = () => { drawer.hidden = true; btn.setAttribute('aria-expanded','false'); btn.focus(); };
+  const mainEl = document.querySelector('main') as HTMLElement | null;
+  const open = () => {
+    drawer.hidden = false;
+    btn.setAttribute('aria-expanded','true');
+    if (mainEl) (mainEl as any).inert = true;
+    close.focus();
+  };
+  const shut = () => {
+    drawer.hidden = true;
+    btn.setAttribute('aria-expanded','false');
+    if (mainEl) (mainEl as any).inert = false;
+    btn.focus();
+  };
   btn.addEventListener('click', open);
   close.addEventListener('click', shut);
   drawer.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
