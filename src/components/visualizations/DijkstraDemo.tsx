@@ -165,7 +165,7 @@ export default function DijkstraDemo() {
             );
           })}
           {g.nodes.map(n => (
-            <g transform={`translate(${n.x},${n.y})`}>
+            <g key={n.id} transform={`translate(${n.x},${n.y})`}>
               <circle r={nodeR} fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
               <text dy="0.35em" text-anchor="middle" font-size={nodeFontSize} fill={COLORS.ink}>{n.id}</text>
               <text y={distLabelY} text-anchor="middle" font-size={distFontSize} fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
