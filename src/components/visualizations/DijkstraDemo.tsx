@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { dijkstraTrace, type Graph } from '@/lib/dijkstra';
 import { useTrace } from './_shared/useTrace';
 import PlayControls from './_shared/PlayControls';
@@ -79,11 +79,13 @@ export default function DijkstraDemo() {
   const [preset, setPreset] = useState<keyof typeof PRESETS>(PRESET_KEYS[initPresetIdx]);
   const { g, s, warn, viewBox: presetViewBox, nodeR = 18, nodeFontSize = 13, distFontSize = 11, distLabelY = -26 } = PRESETS[preset];
   const trace = useMemo(() => dijkstraTrace(g, s), [g, s]);
+  const onStepRef = useRef<(i: number) => void>(() => {});
+  onStepRef.current = (i: number) => {
+    const pidx = PRESET_KEYS.indexOf(preset as string);
+    replaceUrl({ demo: 'dijkstra', params: { preset: pidx }, step: i });
+  };
   const t = useTrace(trace.frames.length, {
-    onStep: (i) => {
-      const pidx = PRESET_KEYS.indexOf(preset as string);
-      replaceUrl({ demo: 'dijkstra', params: { preset: pidx }, step: i });
-    },
+    onStep: (i) => onStepRef.current(i),
   });
 
   // Apply URL-initialized step on first render (clamp to valid range)
@@ -116,7 +118,10 @@ export default function DijkstraDemo() {
           class={`dj__svg${preset === 'grid' ? ' dj__svg--grid' : ''}`}>
           {g.edges.map(e => {
             const a = g.nodes.find(n => n.id === e.from)!, b = g.nodes.find(n => n.id === e.to)!;
-            const hot = f.relaxing && f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to;
+            const hot = f.relaxing != null && (
+              (f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to) ||
+              (!g.directed && f.relaxing.edge.from === e.to && f.relaxing.edge.to === e.from)
+            );
             return <g>
               <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={hot ? COLORS.accent : COLORS.gray300} stroke-width={hot ? 3 : 1.5} />
               <text x={(a.x+b.x)/2} y={(a.y+b.y)/2 - 4} text-anchor="middle" font-size="11" fill={COLORS.muted}>{e.w}</text>
@@ -130,7 +135,7 @@ export default function DijkstraDemo() {
             </g>
           ))}
         </svg>
-        <div class="dj__table-wrap" aria-label="dist/prev 实时表格" role="region" aria-live="polite">
+        <div class="dj__table-wrap" aria-label="dist/prev 实时表格" role="region">
           <table class="dj__table">
             <thead><tr><th>节点</th><th>dist</th><th>prev</th></tr></thead>
             <tbody>
@@ -156,7 +161,7 @@ export default function DijkstraDemo() {
         .dj__svg--grid{max-height:480px;}
         .dj__preset{display:block;margin:0 0 var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
         .dj__warn{margin:var(--space-1) 0 var(--space-2);padding:var(--space-2) var(--space-3);background:color-mix(in srgb,var(--color-warning) 8%,transparent);border-left:4px solid var(--color-warning);border-radius:var(--radius-sm);font-size:var(--fs-caption);color:var(--color-body);}
-        .dj__table-wrap{flex:0 0 auto;overflow-x:auto;}
+        .dj__table-wrap{flex:0 0 auto;overflow-x:auto;max-width:100%;}
         .dj__table{border-collapse:collapse;font-size:var(--fs-caption);white-space:nowrap;}
         .dj__table th,.dj__table td{border:1px solid var(--gray-200);padding:3px 10px;text-align:center;}
         .dj__table th{background:var(--gray-100,#f7fafc);color:var(--color-muted);}
