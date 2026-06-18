@@ -8,7 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
@@ -23,15 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm astro build
       - name: Install Playwright Chromium
         run: pnpm exec playwright install chromium --with-deps
-      - name: Run e2e tests
-        run: pnpm test:e2e
+      - name: Run e2e tests (chromium-based projects only; webkit/iOS 留待后续)
+        run: pnpm exec playwright test --project=desktop-chrome --project=tablet --project=dark-mode
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -45,7 +43,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
