@@ -24,8 +24,9 @@ const NEG: Graph = {
   edges: [{from:'A',to:'B',w:1},{from:'A',to:'C',w:2},{from:'C',to:'B',w:-2},{from:'B',to:'D',w:3}],
 };
 // 5×5 grid map — nodes are spaced 80px apart starting at (50,50).
-// High-cost zone: the center interior block (rows 1-3, cols 1-3) edges get weight 15
-// instead of the default 1, forcing the shortest path to skirt the edges.
+// High-cost zone: edges whose both endpoints lie within the 3×3 interior node block
+// (rows 1-3 AND cols 1-3) get weight 15; all other edges get weight 1.
+// This forces the shortest path from corner 0,0 to skirt around the expensive center.
 const GRID_SIZE = 5;
 const GRID_CELL = 80;
 const GRID_OFFSET_X = 50;
@@ -58,11 +59,14 @@ function makeGrid(): Graph {
   return { directed: false, nodes, edges };
 }
 const GRID: Graph = makeGrid();
-const PRESETS: Record<string, { g: Graph; s: string; label: string; warn?: string }> = {
+const PRESETS: Record<string, {
+  g: Graph; s: string; label: string; warn?: string;
+  viewBox?: string; nodeR?: number; nodeFontSize?: number; distFontSize?: number; distLabelY?: number;
+}> = {
   textbook: { g: TEXTBOOK, s: 'A', label: '教科书小图（6 节点）' },
   negTrap: { g: NEG, s: 'A', label: '负权陷阱（Dijkstra 失效）',
     warn: '负权边 C→B(-2) 本可让 B 的最短距离降到 0（路径 A→C→B=2+(-2)=0），但 Dijkstra 先以 dist[B]=1 将 B "确定"，随后松弛 C→B 时因 B 已确定而被跳过，故给出错误的 dist[B]=1，B→D 随之偏大。负权图应改用 Bellman-Ford。' },
-  grid: { g: GRID, s: '0,0', label: '网格地图（5×5，绕开高代价区）' },
+  grid: { g: GRID, s: '0,0', label: '网格地图（5×5，绕开高代价区）', viewBox: '0 0 420 420', nodeR: 13, nodeFontSize: 8, distFontSize: 9, distLabelY: -18 },
 };
 
 const PRESET_KEYS = Object.keys(PRESETS) as Array<keyof typeof PRESETS>;
@@ -73,8 +77,8 @@ const init = typeof location !== 'undefined' ? decodeState(location.search, 'dij
 export default function DijkstraDemo() {
   const initPresetIdx = Math.min(Math.max(0, Math.round(init.params.preset ?? 0)), PRESET_KEYS.length - 1);
   const [preset, setPreset] = useState<keyof typeof PRESETS>(PRESET_KEYS[initPresetIdx]);
-  const { g, s, warn } = PRESETS[preset];
-  const trace = useMemo(() => dijkstraTrace(g, s), [preset]);
+  const { g, s, warn, viewBox: presetViewBox, nodeR = 18, nodeFontSize = 13, distFontSize = 11, distLabelY = -26 } = PRESETS[preset];
+  const trace = useMemo(() => dijkstraTrace(g, s), [g, s]);
   const t = useTrace(trace.frames.length, {
     onStep: (i) => {
       const pidx = PRESET_KEYS.indexOf(preset as string);
@@ -107,8 +111,8 @@ export default function DijkstraDemo() {
       </label>
       {warn && <p class="dj__warn" role="note">⚠ {warn}</p>}
       <svg role="img" aria-label={`最短路演示：${f.narration}`}
-        viewBox={preset === 'grid' ? '0 0 420 420' : '0 0 480 240'}
-        class="dj__svg">
+        viewBox={presetViewBox ?? '0 0 480 240'}
+        class={`dj__svg${preset === 'grid' ? ' dj__svg--grid' : ''}`}>
         {g.edges.map(e => {
           const a = g.nodes.find(n => n.id === e.from)!, b = g.nodes.find(n => n.id === e.to)!;
           const hot = f.relaxing && f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to;
@@ -119,9 +123,9 @@ export default function DijkstraDemo() {
         })}
         {g.nodes.map(n => (
           <g transform={`translate(${n.x},${n.y})`}>
-            <circle r={preset === 'grid' ? 13 : 18} fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
-            <text dy="0.35em" text-anchor="middle" font-size={preset === 'grid' ? 8 : 13} fill={COLORS.ink}>{n.id}</text>
-            <text y={preset === 'grid' ? -18 : -26} text-anchor="middle" font-size={preset === 'grid' ? 9 : 11} fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
+            <circle r={nodeR} fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
+            <text dy="0.35em" text-anchor="middle" font-size={nodeFontSize} fill={COLORS.ink}>{n.id}</text>
+            <text y={distLabelY} text-anchor="middle" font-size={distFontSize} fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
           </g>
         ))}
       </svg>
@@ -133,7 +137,8 @@ export default function DijkstraDemo() {
           <tbody>{g.nodes.map(n => <tr><td>{n.id}</td><td>{f.dist[n.id]===Infinity?'∞':f.dist[n.id]}</td><td>{f.prev[n.id]??'—'}</td></tr>)}</tbody>
         </table>
       </details>
-      <style>{`.dj__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);max-height:480px;}
+      <style>{`.dj__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);}
+        .dj__svg--grid{max-height:480px;}
         .dj__preset{display:block;margin:0 0 var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
         .dj__warn{margin:var(--space-1) 0 var(--space-2);padding:var(--space-2) var(--space-3);background:color-mix(in srgb,var(--color-warning) 8%,transparent);border-left:4px solid var(--color-warning);border-radius:var(--radius-sm);font-size:var(--fs-caption);color:var(--color-body);}
         .dj__alt{margin-top:var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
