@@ -269,7 +269,7 @@ export default function MaxflowDemo() {
 
         <div class="mf__pseudo">
           <p class="mf__pseudo-title">算法伪代码</p>
-          <pre class="mf__pseudo-pre">
+          <pre class="mf__pseudo-pre" tabindex={0} role="region" aria-label="Edmonds-Karp 算法伪代码（可横向滚动）">
             {PSEUDO_LINES.map((line, i) => (
               <div key={i} class={`mf__pseudo-line${activeLines.has(i) ? ' mf__pseudo-line--active' : ''}`}>{line}</div>
             ))}
