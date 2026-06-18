@@ -23,10 +23,46 @@ const NEG: Graph = {
   nodes: [{id:'A',x:60,y:120},{id:'B',x:220,y:70},{id:'C',x:220,y:170},{id:'D',x:380,y:120}],
   edges: [{from:'A',to:'B',w:1},{from:'A',to:'C',w:2},{from:'C',to:'B',w:-2},{from:'B',to:'D',w:3}],
 };
+// 5×5 grid map — nodes are spaced 80px apart starting at (50,50).
+// High-cost zone: the center interior block (rows 1-3, cols 1-3) edges get weight 15
+// instead of the default 1, forcing the shortest path to skirt the edges.
+const GRID_SIZE = 5;
+const GRID_CELL = 80;
+const GRID_OFFSET_X = 50;
+const GRID_OFFSET_Y = 50;
+
+function makeGrid(): Graph {
+  const nodes: Graph['nodes'] = [];
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      nodes.push({ id: `${r},${c}`, x: GRID_OFFSET_X + c * GRID_CELL, y: GRID_OFFSET_Y + r * GRID_CELL });
+    }
+  }
+  const edges: Graph['edges'] = [];
+  const isHighCost = (r1: number, c1: number, r2: number, c2: number) =>
+    Math.min(r1,r2) >= 1 && Math.max(r1,r2) <= 3 &&
+    Math.min(c1,c2) >= 1 && Math.max(c1,c2) <= 3;
+
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      if (c + 1 < GRID_SIZE) {
+        const w = isHighCost(r, c, r, c + 1) ? 15 : 1;
+        edges.push({ from: `${r},${c}`, to: `${r},${c+1}`, w });
+      }
+      if (r + 1 < GRID_SIZE) {
+        const w = isHighCost(r, c, r + 1, c) ? 15 : 1;
+        edges.push({ from: `${r},${c}`, to: `${r+1},${c}`, w });
+      }
+    }
+  }
+  return { directed: false, nodes, edges };
+}
+const GRID: Graph = makeGrid();
 const PRESETS: Record<string, { g: Graph; s: string; label: string; warn?: string }> = {
   textbook: { g: TEXTBOOK, s: 'A', label: '教科书小图（6 节点）' },
   negTrap: { g: NEG, s: 'A', label: '负权陷阱（Dijkstra 失效）',
     warn: '负权边 C→B(-2) 本可让 B 的最短距离降到 0（路径 A→C→B=2+(-2)=0），但 Dijkstra 先以 dist[B]=1 将 B "确定"，随后松弛 C→B 时因 B 已确定而被跳过，故给出错误的 dist[B]=1，B→D 随之偏大。负权图应改用 Bellman-Ford。' },
+  grid: { g: GRID, s: '0,0', label: '网格地图（5×5，绕开高代价区）' },
 };
 
 const PRESET_KEYS = Object.keys(PRESETS) as Array<keyof typeof PRESETS>;
@@ -70,7 +106,9 @@ export default function DijkstraDemo() {
         </select>
       </label>
       {warn && <p class="dj__warn" role="note">⚠ {warn}</p>}
-      <svg role="img" aria-label={`最短路演示：${f.narration}`} viewBox="0 0 480 240" class="dj__svg">
+      <svg role="img" aria-label={`最短路演示：${f.narration}`}
+        viewBox={preset === 'grid' ? '0 0 420 420' : '0 0 480 240'}
+        class="dj__svg">
         {g.edges.map(e => {
           const a = g.nodes.find(n => n.id === e.from)!, b = g.nodes.find(n => n.id === e.to)!;
           const hot = f.relaxing && f.relaxing.edge.from === e.from && f.relaxing.edge.to === e.to;
@@ -81,9 +119,9 @@ export default function DijkstraDemo() {
         })}
         {g.nodes.map(n => (
           <g transform={`translate(${n.x},${n.y})`}>
-            <circle r="18" fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
-            <text dy="0.35em" text-anchor="middle" font-size="13" fill={COLORS.ink}>{n.id}</text>
-            <text y="-26" text-anchor="middle" font-size="11" fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
+            <circle r={preset === 'grid' ? 13 : 18} fill="#fff" stroke={colorOf(n.id)} stroke-width="3" />
+            <text dy="0.35em" text-anchor="middle" font-size={preset === 'grid' ? 8 : 13} fill={COLORS.ink}>{n.id}</text>
+            <text y={preset === 'grid' ? -18 : -26} text-anchor="middle" font-size={preset === 'grid' ? 9 : 11} fill={COLORS.primary}>{f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}</text>
           </g>
         ))}
       </svg>
@@ -95,7 +133,7 @@ export default function DijkstraDemo() {
           <tbody>{g.nodes.map(n => <tr><td>{n.id}</td><td>{f.dist[n.id]===Infinity?'∞':f.dist[n.id]}</td><td>{f.prev[n.id]??'—'}</td></tr>)}</tbody>
         </table>
       </details>
-      <style>{`.dj__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);}
+      <style>{`.dj__svg{width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);max-height:480px;}
         .dj__preset{display:block;margin:0 0 var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
         .dj__warn{margin:var(--space-1) 0 var(--space-2);padding:var(--space-2) var(--space-3);background:color-mix(in srgb,var(--color-warning) 8%,transparent);border-left:4px solid var(--color-warning);border-radius:var(--radius-sm);font-size:var(--fs-caption);color:var(--color-body);}
         .dj__alt{margin-top:var(--space-2);color:var(--color-muted);font-size:var(--fs-caption);}
