@@ -29,16 +29,20 @@ const PRESETS: Record<string, { g: Graph; s: string; label: string; warn?: strin
     warn: '含负权边 B→C(-3)：Dijkstra 不保证正确——观察节点出堆"已确定"后又出现更短路却无法修正，应改用 Bellman-Ford。' },
 };
 
-const defaults: DemoState = { demo: 'dijkstra', params: { step: 0 }, step: 0 };
+const PRESET_KEYS = Object.keys(PRESETS) as Array<keyof typeof PRESETS>;
+
+const defaults: DemoState = { demo: 'dijkstra', params: { preset: 0 }, step: 0 };
 const init = typeof location !== 'undefined' ? decodeState(location.search, 'dijkstra', defaults) : defaults;
 
 export default function DijkstraDemo() {
-  const [preset, setPreset] = useState<keyof typeof PRESETS>('textbook');
+  const initPresetIdx = Math.min(Math.max(0, Math.round(init.params.preset ?? 0)), PRESET_KEYS.length - 1);
+  const [preset, setPreset] = useState<keyof typeof PRESETS>(PRESET_KEYS[initPresetIdx]);
   const { g, s, warn } = PRESETS[preset];
   const trace = useMemo(() => dijkstraTrace(g, s), [preset]);
   const t = useTrace(trace.frames.length, {
     onStep: (i) => {
-      replaceUrl({ demo: 'dijkstra', params: { step: i }, step: i });
+      const pidx = PRESET_KEYS.indexOf(preset as string);
+      replaceUrl({ demo: 'dijkstra', params: { preset: pidx }, step: i });
     },
   });
 
@@ -56,9 +60,11 @@ export default function DijkstraDemo() {
     <div class="dj">
       <label class="dj__preset">预设
         <select value={preset} onChange={(e) => {
-          setPreset((e.target as HTMLSelectElement).value as keyof typeof PRESETS);
+          const key = (e.target as HTMLSelectElement).value as keyof typeof PRESETS;
+          setPreset(key);
           t.reset();
-          replaceUrl({ demo: 'dijkstra', params: { step: 0 }, step: 0 });
+          const pidx = PRESET_KEYS.indexOf(key as string);
+          replaceUrl({ demo: 'dijkstra', params: { preset: pidx }, step: 0 });
         }}>
           {Object.entries(PRESETS).map(([k,v]) => <option value={k}>{v.label}</option>)}
         </select>

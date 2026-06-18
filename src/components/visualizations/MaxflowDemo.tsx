@@ -22,16 +22,20 @@ const PRESETS: Record<string,{net:FlowNetwork;label:string}> = {
   reverse: { net: REVERSE, label:'反向边救场网（需反向边撤回）' },
 };
 
-const defaults: DemoState = { demo: 'maxflow', params: { step: 0 }, step: 0 };
+const PRESET_KEYS_MF = Object.keys(PRESETS) as Array<keyof typeof PRESETS>;
+
+const defaults: DemoState = { demo: 'maxflow', params: { preset: 0 }, step: 0 };
 const init = typeof location !== 'undefined' ? decodeState(location.search, 'maxflow', defaults) : defaults;
 
 export default function MaxflowDemo() {
-  const [preset, setPreset] = useState<keyof typeof PRESETS>('classic');
+  const initPresetIdxMF = Math.min(Math.max(0, Math.round(init.params.preset ?? 0)), PRESET_KEYS_MF.length - 1);
+  const [preset, setPreset] = useState<keyof typeof PRESETS>(PRESET_KEYS_MF[initPresetIdxMF]);
   const { net } = PRESETS[preset];
   const trace = useMemo(() => edmondsKarpTrace(net), [preset]);
   const t = useTrace(trace.frames.length, {
     onStep: (i) => {
-      replaceUrl({ demo: 'maxflow', params: { step: i }, step: i });
+      const pidx = PRESET_KEYS_MF.indexOf(preset as string);
+      replaceUrl({ demo: 'maxflow', params: { preset: pidx }, step: i });
     },
   });
 
@@ -48,9 +52,11 @@ export default function MaxflowDemo() {
     <div class="mf">
       <label class="mf__preset">预设
         <select value={preset} onChange={(e) => {
-          setPreset((e.target as HTMLSelectElement).value as keyof typeof PRESETS);
+          const key = (e.target as HTMLSelectElement).value as keyof typeof PRESETS;
+          setPreset(key);
           t.reset();
-          replaceUrl({ demo: 'maxflow', params: { step: 0 }, step: 0 });
+          const pidx = PRESET_KEYS_MF.indexOf(key as string);
+          replaceUrl({ demo: 'maxflow', params: { preset: pidx }, step: 0 });
         }}>
           {Object.entries(PRESETS).map(([k,v]) => <option value={k}>{v.label}</option>)}
         </select>
