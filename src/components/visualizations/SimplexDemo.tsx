@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { feasibleVertices, objectiveValue, type HalfPlane } from '@/lib/geometry';
 import { solveSimplexTrace } from '@/lib/simplex';
 import { useTrace } from './_shared/useTrace';
@@ -21,7 +21,7 @@ const PRESETS: Record<PresetKey, { label: string; c: [number, number]; constrain
 };
 const PRESET_KEYS = Object.keys(PRESETS) as PresetKey[];
 
-const defaults: DemoState = { demo: 'lp', params: { preset: 0, c1: 30, c2: 20, step: 0 }, step: 0 };
+const defaults: DemoState = { demo: 'lp', params: { preset: 0, c1: 30, c2: 20 }, step: 0 };
 const init = typeof location !== 'undefined' ? decodeState(location.search, 'lp', defaults) : defaults;
 
 function initPresetKey(): PresetKey {
@@ -45,9 +45,14 @@ export default function SimplexDemo() {
   const t = useTrace(trace.frames.length, {
     onStep: (i) => {
       const pidx = PRESET_KEYS.indexOf(preset);
-      replaceUrl({ demo: 'lp', params: { preset: pidx, c1, c2, step: i }, step: i });
+      replaceUrl({ demo: 'lp', params: { preset: pidx, c1, c2 }, step: i });
     },
   });
+  // Apply URL-initialized step on first render (clamp to valid range)
+  useEffect(() => {
+    const urlStep = Math.min(Math.max(0, init.step), trace.frames.length - 1);
+    if (urlStep > 0) t.go(urlStep);
+  }, []);
   const stepVertex = trace.frames[t.i]?.vertex ?? best;
   const poly = verts.map(p => `${sx(p.x)},${sy(p.y)}`).join(' ');
   const hi = mode==='step' ? stepVertex : best;
@@ -59,19 +64,19 @@ export default function SimplexDemo() {
     setC2(pd.c[1]);
     t.reset();
     const pidx = PRESET_KEYS.indexOf(key);
-    replaceUrl({ demo: 'lp', params: { preset: pidx, c1: pd.c[0], c2: pd.c[1], step: 0 }, step: 0 });
+    replaceUrl({ demo: 'lp', params: { preset: pidx, c1: pd.c[0], c2: pd.c[1] }, step: 0 });
   };
   const handleC1 = (v: number) => {
     setC1(v);
     t.reset();
     const pidx = PRESET_KEYS.indexOf(preset);
-    replaceUrl({ demo: 'lp', params: { preset: pidx, c1: v, c2, step: 0 }, step: 0 });
+    replaceUrl({ demo: 'lp', params: { preset: pidx, c1: v, c2 }, step: 0 });
   };
   const handleC2 = (v: number) => {
     setC2(v);
     t.reset();
     const pidx = PRESET_KEYS.indexOf(preset);
-    replaceUrl({ demo: 'lp', params: { preset: pidx, c1, c2: v, step: 0 }, step: 0 });
+    replaceUrl({ demo: 'lp', params: { preset: pidx, c1, c2: v }, step: 0 });
   };
 
   const statusText = mode==='step'
