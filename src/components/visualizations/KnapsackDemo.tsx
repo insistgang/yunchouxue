@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { knapsackTrace, type Item } from '@/lib/knapsack';
 import { useTrace } from './_shared/useTrace';
 import PlayControls from './_shared/PlayControls';
@@ -27,6 +27,11 @@ export default function KnapsackDemo() {
       replaceUrl({ demo: 'knapsack', params: { preset: pidx, step: i }, step: i });
     },
   });
+  // Apply URL-initialized step on first render (clamp to valid range)
+  useEffect(() => {
+    const urlStep = Math.min(Math.max(0, init.step), trace.frames.length - 1);
+    if (urlStep > 0) t.go(urlStep);
+  }, []);
   const f = trace.frames[t.i];
   const cell = 38;
   const isBacktrackPhase = f.phase === 'backtrack' || f.phase === 'done';
