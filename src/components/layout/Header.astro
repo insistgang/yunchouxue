@@ -15,7 +15,7 @@ import MobileMenu from './MobileMenu.astro';
       {links.map(l => (
         <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
       ))}
-      <a class="nav__gh" href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub 源码">GitHub</a>
+      <a class="nav__gh" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub 源码">GitHub</a>
     </nav>
     <MobileMenu links={links} />
   </div>
