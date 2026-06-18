@@ -328,3 +328,32 @@ grep draft/placeholder → 0 matches (PASS)
 | iOS/Android 真机 e2e | 低 | 需 `playwright install webkit`；本地 chromium/tablet/dark 已全过 |
 | touch-action 未显式设 SVG | 低 | 响应式 e2e 已过；可在 Figure 容器加 `touch-action` 进一步保险 |
 | DijkstraDemo/MaxflowDemo 第 3 预设 | 低（v2）| DoD ≥2 已满足；PRD 7.2/7.3 的额外教学预设留 v2 |
+
+---
+
+## 三遍全项目审查（2026-06-18）发现与修复
+
+并行三维度审查（正确性/算法、PRD-DoD合规/内容、质量-安全-无障碍-性能）。结论：4 个算法 lib + 18 测试期望值全部正确；问题集中在内容数值、URL 一致性、无障碍工程与演示丰富度。
+
+### 已修复（Tier A — 明确缺陷）
+
+| 类别 | 修复 |
+|---|---|
+| 内容正确性 | `max-flow-min-cut.mdx` 手算改用与演示同一网络、最大流值经 lib 验算改为 **15**（原误作 19）、补足 4 个核心公式纯文本；`dijkstra.mdx` 手算第 5/6 轮顺序修正（先 F 后 E）；`simplex.mdx` 第二次迭代比值描述修正（行 0 系数 1/2） |
+| URL 一致性(8.7-4) | 4 个 island 统一：Simplex/Knapsack 补 URL step 恢复、去重复 step；Dijkstra/Maxflow 预设写入 URL 并恢复 |
+| 教学有效性 | Dijkstra 负权陷阱预设换为**真正让 Dijkstra 出错**的图（lib 验证 dist[B]=1≠真实 0） |
+| 无障碍 | 移动抽屉焦点陷阱（inert）；useTrace 键盘监听避让表单控件；reduced-motion 播放改为跳末帧停；TOC `aria-current="location"`；移动端 TOC 折叠抽屉（PRD 6.3-5）；StatusLog 类名隔离 |
+| 工程/安全 | 删 d3 幽灵依赖；about 联系补可点击外链；外链补 `rel="noopener noreferrer"` |
+
+复验：check 0/0/0、vitest 18、build 9 页、budget 4 island 全过、e2e（桌面+平板+暗色）213 全过。
+
+### 待定（Tier B — 演示丰富度未达 PRD 7.x 详规，计划当初有意先达 DoD、后续完善）
+
+| 演示 | PRD 7.x 未落地的丰富交互 |
+|---|---|
+| 单纯形 | 侧栏单纯形表联动、梯度箭头、顶点访问轨迹连线、4 微步停顿、"无界"预设 |
+| Dijkstra | 第 3 预设（5×5 网格地图）、主视图 dist/prev 实时表、最短路树渐进加粗 |
+| 最大流 | 第 3 预设（对称瓶颈网）、**残余网络切换视图**、伪代码当前行高亮 |
+| 背包 | 来源指示双箭头（正上/左上）、侧栏方程实例代入面板 |
+
+> Tier B 体量较大（≈把 4 个演示按 PRD 全规格重做一轮），属当初计划的有意取舍，是否纳入 v1 由产品决策；不影响当前 DoD ≥2 预设/双向步进/解说/等价文本的达标。
