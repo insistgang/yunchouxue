@@ -193,6 +193,13 @@ export default function DijkstraDemo() {
       <PlayControls i={t.i} total={trace.frames.length} playing={t.playing} speed={t.speed}
         onPrev={t.prev} onNext={t.next} onToggle={() => t.setPlaying(!t.playing)} onReset={t.reset} onSpeed={t.setSpeed} />
       <StatusLog text={f.narration} />
+      <details class="dj__alt">
+        <summary>等价文本视图（无障碍）</summary>
+        <p>当前步进解说：{f.narration}</p>
+        <p>已确定节点：{f.settled.length > 0 ? f.settled.join('、') : '（无）'}</p>
+        <p>优先队列：{f.queue.length > 0 ? f.queue.join('、') : '（空）'}</p>
+        <ul>{g.nodes.map(n => <li key={n.id}>{n.id}：dist={f.dist[n.id] === Infinity ? '∞' : f.dist[n.id]}，prev={f.prev[n.id] ?? '—'}</li>)}</ul>
+      </details>
       <style>{`.dj__layout{display:flex;gap:var(--space-4);align-items:flex-start;flex-wrap:wrap;}
         .dj__svg{flex:1 1 280px;min-width:0;width:100%;background:var(--demo-canvas);border-radius:var(--radius-sm);}
         .dj__svg--grid{max-height:480px;}
@@ -202,7 +209,9 @@ export default function DijkstraDemo() {
         .dj__table{border-collapse:collapse;font-size:var(--fs-caption);white-space:nowrap;}
         .dj__table th,.dj__table td{border:1px solid var(--gray-200);padding:3px 10px;text-align:center;}
         .dj__table th{background:var(--gray-100,#f7fafc);color:var(--color-muted);}
-        .dj__table-row--active td{background:color-mix(in srgb,var(--color-accent,#B45309) 12%,transparent);font-weight:600;}`}</style>
+        .dj__table-row--active td{background:color-mix(in srgb,var(--color-accent,#B45309) 12%,transparent);font-weight:600;}
+        .dj__alt{margin-top:var(--space-3);font-size:var(--fs-caption);color:var(--color-muted);}
+        .dj__alt summary{cursor:pointer;color:var(--color-primary);}`}</style>
     </div>
   );
 }
