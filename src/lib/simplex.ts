@@ -48,15 +48,19 @@ export function solveSimplexTrace(lp: LP): SimplexTrace {
     }
     if (leave === -1) { snap(enter, null, 'unbounded', `入基列无正系数 → 无界`); return { frames, status: 'unbounded', optimum: null }; }
     snap(enter, leave, 'ratio', `最小比值检验：第 ${leave+1} 行出基（θ=${best.toFixed(3)}）`);
-    // 主元消元
+    // 主元消元 (Gauss-Jordan)
     const piv = T[leave][enter];
     for (let j = 0; j < cols; j++) T[leave][j] /= piv;
     for (let i = 0; i <= m; i++) if (i !== leave && Math.abs(T[i][enter]) > 1e-12) {
       const factor = T[i][enter];
       for (let j = 0; j < cols; j++) T[i][j] -= factor * T[leave][j];
     }
+    // ③ pivot 帧：消元后表格，顶点尚未更新（basis 还未换）
+    snap(enter, leave, 'pivot', `换基消元：x${enter+1} 入基，第 ${leave+1} 行归一化并消元，主元格已更新`);
+    // 更新基
     basis[leave] = enter;
-    snap(enter, leave, 'move', `换基消元完成，移动到顶点 (${vertexOf().x.toFixed(2)}, ${vertexOf().y.toFixed(2)})，z=${zOf().toFixed(3)}`);
+    // ④ move 帧：顶点已移动
+    snap(enter, leave, 'move', `移动到顶点 (${vertexOf().x.toFixed(2)}, ${vertexOf().y.toFixed(2)})，z=${zOf().toFixed(3)}`);
   }
   return { frames, status: 'optimal', optimum: { vertex: vertexOf(), z: zOf() } };
 }
