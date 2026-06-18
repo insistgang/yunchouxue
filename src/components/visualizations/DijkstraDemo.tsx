@@ -20,13 +20,13 @@ const TEXTBOOK: Graph = {
 };
 const NEG: Graph = {
   directed: true,
-  nodes: [{id:'A',x:60,y:120},{id:'B',x:220,y:60},{id:'C',x:220,y:180},{id:'D',x:380,y:120}],
-  edges: [{from:'A',to:'B',w:1},{from:'A',to:'C',w:4},{from:'B',to:'C',w:-3},{from:'C',to:'D',w:1}],
+  nodes: [{id:'A',x:60,y:120},{id:'B',x:220,y:70},{id:'C',x:220,y:170},{id:'D',x:380,y:120}],
+  edges: [{from:'A',to:'B',w:1},{from:'A',to:'C',w:2},{from:'C',to:'B',w:-2},{from:'B',to:'D',w:3}],
 };
 const PRESETS: Record<string, { g: Graph; s: string; label: string; warn?: string }> = {
   textbook: { g: TEXTBOOK, s: 'A', label: '教科书小图（6 节点）' },
   negTrap: { g: NEG, s: 'A', label: '负权陷阱（Dijkstra 失效）',
-    warn: '含负权边 B→C(-3)：Dijkstra 不保证正确——观察节点出堆"已确定"后又出现更短路却无法修正，应改用 Bellman-Ford。' },
+    warn: '负权边 C→B(-2) 本可让 B 的最短距离降到 0（路径 A→C→B=2+(-2)=0），但 Dijkstra 先以 dist[B]=1 将 B "确定"，随后松弛 C→B 时因 B 已确定而被跳过，故给出错误的 dist[B]=1，B→D 随之偏大。负权图应改用 Bellman-Ford。' },
 };
 
 const PRESET_KEYS = Object.keys(PRESETS) as Array<keyof typeof PRESETS>;
