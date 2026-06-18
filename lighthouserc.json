@@ -4,12 +4,11 @@
       "staticDistDir": "./dist",
       "url": [
         "http://localhost/",
-        "http://localhost/topics/linear-programming-simplex"
+        "http://localhost/topics/linear-programming-simplex/"
       ],
       "numberOfRuns": 3
     },
     "assert": {
-      "preset": "lighthouse:no-pwa",
       "assertions": {
         "categories:performance": ["error", { "minScore": 0.95 }],
         "categories:accessibility": ["error", { "minScore": 0.95 }],
